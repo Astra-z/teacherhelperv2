@@ -168,7 +168,7 @@ public class UserController {
      * 更新部分数据
      * @param userId userId
      * @param data userDO部分信息
-     * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
+     * @return RespondResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@PatchMapping("/{userId}")
 	@RequiresPermissions({ "user-r", "user-u"})
@@ -190,7 +190,7 @@ public class UserController {
     /**
      * 根据Id删除数据
      * @param userDOId userDOId
-     * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
+     * @return RespondResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@DeleteMapping("/{userId}")
 	@RequiresPermissions({"user-r", "user-d"})

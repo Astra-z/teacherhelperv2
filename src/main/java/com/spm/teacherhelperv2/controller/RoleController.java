@@ -148,7 +148,7 @@ public class  RoleController {
      * 更新部分数据
      * @param roleId roleId
      * @param data roleDO部分信息
-     * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
+     * @return RespondResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@PatchMapping("/{roleId}")
 	@RequiresPermissions({ "role-r", "role-u"})
@@ -170,7 +170,7 @@ public class  RoleController {
     /**
      * 根据Id删除数据
      * @param roleDOId roleDOId
-     * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
+     * @return RespondResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@DeleteMapping("/{roleId}")
 	@RequiresPermissions({"role-r", "role-d"})

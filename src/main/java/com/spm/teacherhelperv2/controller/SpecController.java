@@ -148,7 +148,7 @@ public class SpecController {
      * 更新部分数据
      * @param specId specId
      * @param data specDO部分信息
-     * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
+     * @return RespondResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@PatchMapping("/{specId}")
 	@RequiresPermissions({ "spec-r", "spec-u"})
@@ -170,7 +170,7 @@ public class SpecController {
     /**
      * 根据Id删除数据
      * @param specDOId specDOId
-     * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
+     * @return RespondResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@DeleteMapping("/{specId}")
 	@RequiresPermissions({"spec-r", "spec-d"})

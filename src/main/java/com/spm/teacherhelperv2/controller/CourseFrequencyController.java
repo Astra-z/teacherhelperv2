@@ -152,7 +152,7 @@ public class CourseFrequencyController {
      * 更新部分数据
      * @param courseFrequencyId courseFrequencyId
      * @param data courseFrequencyDO部分信息
-     * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
+     * @return RespondResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@PatchMapping("/{courseFrequencyId}")
 	@RequiresPermissions({ "coursefrequency-r", "coursefrequency-u"})
@@ -174,7 +174,7 @@ public class CourseFrequencyController {
     /**
      * 根据Id删除数据
      * @param courseFrequencyDOId courseFrequencyDOId
-     * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
+     * @return RespondResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@DeleteMapping("/{courseFrequencyId}")
 	@RequiresPermissions({"coursefrequency-r", "coursefrequency-d"})

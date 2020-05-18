@@ -3,17 +3,16 @@ package com.spm.teacherhelperv2.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.spm.teacherhelperv2.entity.MenuDO;
 import com.spm.teacherhelperv2.entity.Tree;
-import com.spm.teacherhelperv2.manager.GetResult;
-import com.spm.teacherhelperv2.manager.ListResult;
+import com.spm.teacherhelperv2.manager.RespondResult;
 import com.spm.teacherhelperv2.service.MenuService;
 import io.swagger.annotations.*;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -161,7 +160,7 @@ public class MenuController {
      * 更新部分数据
      * @param menuId menuId
      * @param data menuDO部分信息
-     * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
+     * @return RespondResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@PatchMapping("/{menuId}")
 //	@RequiresPermissions({ "menu-r", "menu-u"})
@@ -183,10 +182,10 @@ public class MenuController {
     /**
      * 根据Id删除数据
      * @param menuDOId menuDOId
-     * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
+     * @return RespondResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@DeleteMapping("/{menuId}")
-//	@RequiresPermissions({"menu-r", "menu-d"})
+	@RequiresPermissions({"menu-r", "menu-d"})
 	@ApiOperation(value = "根据Id删除数据",httpMethod = "DELETE",notes = "用于通过menuDOId，删除s_menu表中对应的一条数据，为异步方法，结果会回调到异步地址中")
 	@ApiImplicitParam(name = "menuId", value = "menuId", paramType = "path", dataType = "String")
 	@ApiResponses({ @ApiResponse(code = 551, message = "第三方平台错误"), @ApiResponse(code = 552, message = "本平台错误"),
@@ -200,23 +199,18 @@ public class MenuController {
 	}
 
 	@GetMapping("/getUserMenus")
+//    @RequiresPermissions({"menu-rd", "menu-d"})
 	@ApiOperation(value = "根据username找到菜单",httpMethod = "GET",notes = "用于通过username找到菜单")
 	@ApiResponses({ @ApiResponse(code = 551, message = "第三方平台错误"), @ApiResponse(code = 552, message = "本平台错误"),
 			@ApiResponse(code = 553, message = "权限不够"), @ApiResponse(code = 554, message = "请求数据有误"),
 			@ApiResponse(code = 555, message = "请求超时，请重试") })
-	public GetResult getUserMenus(@RequestParam String username){
-        GetResult<Tree<MenuDO>> result=new GetResult<>();
+	public RespondResult getUserMenus(@RequestParam String username){
 		try {
 			Tree<MenuDO> tree=this.menuService.findUserMenu(username);
-			result.setMsg("获取用户菜单成功");
-			result.setStatus(200);
-			result.setData(tree);
+			return RespondResult.success("获取成功",tree);
 
 		}catch (Exception e){
-			logger.error("获取用户菜单失败", e);
-			result.setStatus(500);
-			result.setMsg("获取用户菜单失败");
+			return RespondResult.error("获取用户菜单失败");
 		}
-		return result;
 	}
 }

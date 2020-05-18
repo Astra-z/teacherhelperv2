@@ -154,7 +154,7 @@ public class ScoreController {
      * 更新部分数据
      * @param scoreId scoreId
      * @param data scoreDO部分信息
-     * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
+     * @return RespondResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@PatchMapping("/{scoreId}")
 	@RequiresPermissions({ "score-r", "score-u"})
@@ -176,7 +176,7 @@ public class ScoreController {
     /**
      * 根据Id删除数据
      * @param scoreDOId scoreDOId
-     * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
+     * @return RespondResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@DeleteMapping("/{scoreId}")
 	@RequiresPermissions({"score-r", "score-d"})

@@ -146,7 +146,7 @@ public class CollegeController {
      * 更新部分数据
      * @param collegeId collegeId
      * @param data collegeDO部分信息
-     * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
+     * @return RespondResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@PatchMapping("/{collegeId}")
 	@RequiresPermissions({ "college-r", "college-u"})
@@ -168,7 +168,7 @@ public class CollegeController {
     /**
      * 根据Id删除数据
      * @param collegeDOId collegeDOId
-     * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
+     * @return RespondResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@DeleteMapping("/{collegeId}")
 //	@RequiresPermissions({"college-r", "college-d"})
