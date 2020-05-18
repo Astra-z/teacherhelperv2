@@ -171,7 +171,7 @@ public class CollegeController {
      * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@DeleteMapping("/{collegeId}")
-	@RequiresPermissions({"college-r", "college-d"})
+//	@RequiresPermissions({"college-r", "college-d"})
 	@ApiOperation(value = "根据Id删除数据",httpMethod = "DELETE",notes = "用于通过collegeDOId，删除s_college表中对应的一条数据，为异步方法，结果会回调到异步地址中")
 	@ApiImplicitParam(name = "collegeId", value = "collegeId", paramType = "path", dataType = "String")
 	@ApiResponses({ @ApiResponse(code = 551, message = "第三方平台错误"), @ApiResponse(code = 552, message = "本平台错误"),

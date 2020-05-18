@@ -1,37 +1,31 @@
 package com.spm.teacherhelperv2;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
+import com.spm.teacherhelperv2.entity.MenuDO;
+import com.spm.teacherhelperv2.service.MenuService;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 class Teacherhelperv2ApplicationTests {
-
+    @Autowired
+    @Qualifier("MenuService")
+    MenuService roleService;
 
     @Test
     void contextLoads() {
-        String username="1234";
-        String password="124";
-        Subject subject=SecurityUtils.getSubject();
+        List<MenuDO> menuDOS=roleService.findPermsByUsername("zhangsan");
+        List<String> perms= menuDOS.stream().map(MenuDO::getPerms).collect(Collectors.toList());
+        System.out.println(perms);
 
-        UsernamePasswordToken usernamePasswordToken=new UsernamePasswordToken(username,password);
-        try {
-            subject.login(usernamePasswordToken);
-        } catch (UnknownAccountException e){
-            e.printStackTrace();
-        }
-        catch (IncorrectCredentialsException e){
-            e.printStackTrace();
-        }
-        System.out.println("成功");
+
     }
 
 }

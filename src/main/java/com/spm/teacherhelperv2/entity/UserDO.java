@@ -11,8 +11,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * UserDO实体类
@@ -128,7 +131,10 @@ public class UserDO implements Serializable {
     @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
     private Date modifyTime;
 
-    
+    @Transient
+    @TableField(exist = false)
+    private List<String> roleName;
+
     protected Serializable pkVal() {
         return null;
     }

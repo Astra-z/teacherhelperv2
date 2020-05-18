@@ -16,34 +16,38 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * author: Zhangjr
  * version: 1.0
  */
-//@Configuration
-//public class CORSConfig implements WebMvcConfigurer {
-//
-////    @Override
-////    public void addCorsMappings(CorsRegistry registry) {
-////        registry.addMapping("/**")
-////                .allowedOrigins("*")
-////                .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
-////                .allowCredentials(true)
-////                .maxAge(3600)
-////                .allowedHeaders("*");
-////    }
-//
-//    private CorsConfiguration corsConfig() {
-//        CorsConfiguration corsConfiguration = new CorsConfiguration();
-//        corsConfiguration.addAllowedOrigin("*");
-//        corsConfiguration.addAllowedHeader("*");
-//        corsConfiguration.addAllowedMethod("*");
-//        corsConfiguration.setAllowCredentials(true);
-//        corsConfiguration.setMaxAge(3600L);
-//        return corsConfiguration;
+@Configuration
+public class CORSConfig implements WebMvcConfigurer {
+
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedOrigins("*")
+//                .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
+//                .allowCredentials(true)
+//                .maxAge(3600)
+//                .allowedHeaders("*");
 //    }
-//
-//    @Bean
-//    public CorsFilter corsFilter() {
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", corsConfig());
-//        return new CorsFilter(source);
-//    }
-//
-//}
+
+    /**
+     * 跨域请求配置
+     * @return
+     */
+    private CorsConfiguration corsConfig() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setMaxAge(3600L);
+        return corsConfiguration;
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfig());
+        return new CorsFilter(source);
+    }
+
+}

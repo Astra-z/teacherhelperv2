@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 
 @SpringBootApplication
+@MapperScan("com.spm.teacherhelperv2.dao")
 public class Teacherhelperv2Application {
 
     public static void main(String[] args) {

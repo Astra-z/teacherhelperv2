@@ -2,7 +2,9 @@ package com.spm.teacherhelperv2.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.spm.teacherhelperv2.dao.RoleMapper;
 import com.spm.teacherhelperv2.dao.UserMapper;
+import com.spm.teacherhelperv2.entity.RoleDO;
 import com.spm.teacherhelperv2.entity.UserDO;
 import com.spm.teacherhelperv2.manager.GetEntity;
 import com.spm.teacherhelperv2.service.UserService;
@@ -18,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * UserServiceImpl服务实现类
@@ -30,7 +34,10 @@ public class UserServiceImpl implements UserService {
 	private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	@Autowired(required = false)
-	private UserMapper userMapper;   
+	private UserMapper userMapper;
+
+	@Autowired(required = false)
+	private RoleMapper roleMapper;
 	private GetEntity getEntity = new GetEntity();
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -48,17 +55,37 @@ public class UserServiceImpl implements UserService {
 		    if(limit == null) {
 		        userDOs = this.userMapper.selectList(new QueryWrapper<UserDO>()
 					.eq(annotationValue, fieldValue));
+		        for(UserDO userDO:userDOs){
+                    List<RoleDO> roleList=roleMapper.findUserRole(userDO.getUsername());
+                    List<String> roleNames=roleList.stream().map(RoleDO::getRoleName).collect(Collectors.toList());
+                    userDO.setRoleName(roleNames);
+                }
 			} else {
 			    Page<UserDO> lpage = new Page<UserDO>(Integer.valueOf(page),Integer.valueOf(limit));
 	            userDOs = this.userMapper.selectPage(lpage,new QueryWrapper<UserDO>()
 					.eq(annotationValue, fieldValue)).getRecords();
+                for(UserDO userDO:userDOs){
+                    List<RoleDO> roleList=roleMapper.findUserRole(userDO.getUsername());
+                    List<String> roleNames=roleList.stream().map(RoleDO::getRoleName).collect(Collectors.toList());
+                    userDO.setRoleName(roleNames);
+                }
 			}
 		}else {
 		    if(limit == null) {
 		        userDOs = this.userMapper.selectList(null);
+                for(UserDO userDO:userDOs){
+                    List<RoleDO> roleList=roleMapper.findUserRole(userDO.getUsername());
+                    List<String> roleNames=roleList.stream().map(RoleDO::getRoleName).collect(Collectors.toList());
+                    userDO.setRoleName(roleNames);
+                }
 			} else {
 			    Page<UserDO> lpage = new Page<UserDO>(Integer.valueOf(page),Integer.valueOf(limit));
 	            userDOs = this.userMapper.selectPage(lpage,null).getRecords();
+                for(UserDO userDO:userDOs){
+                    List<RoleDO> roleList=roleMapper.findUserRole(userDO.getUsername());
+                    List<String> roleNames=roleList.stream().map(RoleDO::getRoleName).collect(Collectors.toList());
+                    userDO.setRoleName(roleNames);
+                }
 			}
 		}
         logger.info("receive:[fieldValue:"+fieldValue+"--fieldName:"+fieldName+"--page:"+page+"--limit:"+limit+"];Intermediate variable:[--annotationValue:"+annotationValue+"];--return:"+userDOs);
@@ -72,6 +99,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDO getUserById(Long userId) {
 		UserDO userDO=this.userMapper.selectById(userId);
+		List<RoleDO> roleList=roleMapper.findUserRole(userDO.getUsername());
+		List<String> roleNames=roleList.stream().map(RoleDO::getRoleName).collect(Collectors.toList());
+		userDO.setRoleName(roleNames);
 		logger.info("receive:[userId:"+userId+"];--return:"+userDO);
 		return userDO;
 	}
@@ -87,6 +117,9 @@ public class UserServiceImpl implements UserService {
 		    String annotationValue = getEntity.getAnnotationValue(fields, fieldName);
 		    UserDO userDO = this.userMapper.selectOne(new QueryWrapper<UserDO>()
 				    .eq(annotationValue, fieldValue));
+			List<RoleDO> roleList=roleMapper.findUserRole(userDO.getUsername());
+			List<String> roleNames=roleList.stream().map(RoleDO::getRoleName).collect(Collectors.toList());
+			userDO.setRoleName(roleNames);
 		    logger.info("receive:[fieldValue:"+fieldValue+"--fieldName:"+fieldName+"];Intermediate variable:[--annotationValue:"+annotationValue+"];--return:"+userDO);
 		    return userDO;
 		} catch (Exception e) {
