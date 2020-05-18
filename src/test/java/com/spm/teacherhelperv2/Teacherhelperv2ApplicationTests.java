@@ -23,7 +23,9 @@ class Teacherhelperv2ApplicationTests {
     void contextLoads() {
         List<MenuDO> menuDOS=roleService.findPermsByUsername("zhangsan");
         List<String> perms= menuDOS.stream().map(MenuDO::getPerms).collect(Collectors.toList());
-        System.out.println(perms);
+        perms.forEach(p->{
+            System.out.println(p);
+        });
 
 
     }

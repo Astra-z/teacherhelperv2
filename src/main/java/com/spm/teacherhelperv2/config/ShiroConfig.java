@@ -47,8 +47,8 @@ public class ShiroConfig {
         map.put("/v1/dologin","anon");
         map.put("/**","authc");
 
-        shiroFilterFactoryBean.setLoginUrl("/v1/unlogin");
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
+//        shiroFilterFactoryBean.setLoginUrl("/v1/unlogin");
+//        shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
         return shiroFilterFactoryBean;
     }
 

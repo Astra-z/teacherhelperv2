@@ -159,12 +159,18 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuDO> findPermsByUsername(String username) {
-        return menuMapper.findMenuByUsername(username);
+        return menuMapper.findPermsByUsername(username);
     }
 
     @Override
+    public List<MenuDO> findMenusByUsername(String username) {
+        return menuMapper.findMenusByUsername(username);
+    }
+
+
+    @Override
     public Tree<MenuDO> findUserMenu(String username){
-	    List<MenuDO> menuDOList=this.findPermsByUsername(username);
+	    List<MenuDO> menuDOList=this.findMenusByUsername(username);
 	    List<Tree<MenuDO>> trees=new ArrayList<>();
 	    menuDOList.forEach(menuDO -> {
 	        Tree<MenuDO> tree=new Tree<>();

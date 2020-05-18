@@ -200,8 +200,7 @@ public class MenuController {
 	}
 
 	@GetMapping("/getUserMenus")
-	@ApiOperation(value = "根据Id删除数据",httpMethod = "DELETE",notes = "用于通过menuDOId，删除s_menu表中对应的一条数据，为异步方法，结果会回调到异步地址中")
-	@ApiImplicitParam(name = "menuId", value = "menuId", paramType = "path", dataType = "String")
+	@ApiOperation(value = "根据username找到菜单",httpMethod = "GET",notes = "用于通过username找到菜单")
 	@ApiResponses({ @ApiResponse(code = 551, message = "第三方平台错误"), @ApiResponse(code = 552, message = "本平台错误"),
 			@ApiResponse(code = 553, message = "权限不够"), @ApiResponse(code = 554, message = "请求数据有误"),
 			@ApiResponse(code = 555, message = "请求超时，请重试") })

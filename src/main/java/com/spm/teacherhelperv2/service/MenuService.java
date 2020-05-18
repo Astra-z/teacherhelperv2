@@ -75,6 +75,18 @@ public interface MenuService {
 	 */
 	public List<MenuDO> findPermsByUsername(String username);
 
+	/**
+	 * 根据username获取菜单
+	 * @param username
+	 * @return
+	 */
+	public List<MenuDO> findMenusByUsername(String username);
 
+
+	/**
+	 * 根据用户名获取菜单树
+	 * @param username
+	 * @return
+	 */
 	public Tree<MenuDO> findUserMenu(String username);
 }
