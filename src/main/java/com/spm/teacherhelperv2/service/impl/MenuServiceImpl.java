@@ -179,9 +179,27 @@ public class MenuServiceImpl implements MenuService {
 	        tree.setParentId(menuDO.getParentId().toString());
 	        tree.setText(menuDO.getMenuName());
 	        tree.setIcon(menuDO.getIcon());
+	        tree.setOrder(menuDO.getOrderNum());
 	        trees.add(tree);
         });
 	    return TreeUtils.buildTree(trees);
+    }
 
+    @Override
+    public Tree<MenuDO> findAllMenus() {
+        List<MenuDO> menuDOList=this.menuMapper.findAllMenus();
+        List<Tree<MenuDO>> trees=new ArrayList<>();
+        menuDOList.forEach(menuDO -> {
+            Tree<MenuDO> tree=new Tree<>();
+            tree.setId(menuDO.getMenuId().toString());
+            tree.setUrl(menuDO.getUrl());
+            tree.setParentId(menuDO.getParentId().toString());
+            tree.setText(menuDO.getMenuName());
+            tree.setIcon(menuDO.getIcon());
+            tree.setOrder(menuDO.getOrderNum());
+            tree.setPerms(menuDO.getPerms());
+            trees.add(tree);
+        });
+        return TreeUtils.buildTree(trees);
     }
 }

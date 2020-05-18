@@ -25,4 +25,7 @@ public interface MenuMapper extends BaseMapper<MenuDO> {
             "left join s_user u on (ur.user_id=u.user_id) " +
             "where u.username=#{username}")
     public List<MenuDO> findMenusByUsername(String username);
+
+    @Select("select * from s_menu" )
+    public List<MenuDO> findAllMenus();
 }

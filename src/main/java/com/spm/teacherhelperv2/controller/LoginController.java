@@ -31,12 +31,12 @@ public class LoginController {
     @Autowired
     @Qualifier("UserService")
     UserService userService;
-    @RequestMapping("/unauth")
+    @GetMapping("/unauth")
     public RespondResult unuth(){
         return RespondResult.error("没有权限！");
     }
 
-    @RequestMapping("/unlogin")
+    @GetMapping("/unlogin")
     public RespondResult unLogin(){
         return RespondResult.error("没有登录请先登录!");
     }

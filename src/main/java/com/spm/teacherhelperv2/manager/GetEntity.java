@@ -53,7 +53,7 @@ public class GetEntity {
 	}
 
 	private Object getClassTypeValue(Class<?> typeClass, Object value) {
-		if (typeClass == int.class || value instanceof Integer) {
+		if (typeClass == int.class ) {
 			if (null == value) {
 				return 0;
 			}

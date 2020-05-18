@@ -89,4 +89,10 @@ public interface MenuService {
 	 * @return
 	 */
 	public Tree<MenuDO> findUserMenu(String username);
+
+
+	/**
+	 * 获得所有菜单树
+	 */
+	public Tree<MenuDO> findAllMenus();
 }

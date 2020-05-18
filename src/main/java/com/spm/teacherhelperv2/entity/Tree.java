@@ -37,6 +37,14 @@ public class Tree<T> {
     private Map<String, Object> attributes;
 
     /**
+     * 节点属性
+     */
+    private String perms;
+    /**
+     * 节点顺序
+     */
+    private Long Order;
+    /**
      * 节点的子节点
      */
     private List<Tree<T>> children = new ArrayList<>();
