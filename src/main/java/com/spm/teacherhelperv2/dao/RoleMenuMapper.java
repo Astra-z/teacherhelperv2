@@ -10,4 +10,5 @@ import com.spm.teacherhelperv2.entity.RoleMenuDO;
  */
 public interface RoleMenuMapper extends BaseMapper<RoleMenuDO> {
 
+
 }

@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *  MenuController前端控制器
@@ -55,7 +57,11 @@ public class MenuController {
         logger.info("receive:[page:"+page+"--limit:"+limit+"--fieldValue:"+fieldValue+"--fieldName:"+fieldName+"]");
         try {
             List<MenuDO> menus = menuService.listMenuByOther(fieldValue, fieldName, page, limit);
-            return RespondResult.success("查找成功",menus);
+            Integer total=menuService.countAllMenus();
+            Map data=new HashMap();
+            data.put("data",menus);
+            data.put("total",total);
+            return RespondResult.success("查找成功",data);
         }catch (Exception e){
             return RespondResult.error("查找失败");
         }

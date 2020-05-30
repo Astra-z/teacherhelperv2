@@ -11,8 +11,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * RoleDO实体类
@@ -61,6 +63,9 @@ public class RoleDO implements Serializable {
     @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
     private Date modifyTime;
 
+    @Transient
+    @TableField(exist = false)
+    private List<Long> menuIdList;
     
     protected Serializable pkVal() {
         return null;

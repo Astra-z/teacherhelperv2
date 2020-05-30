@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.crypto.Data;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -130,8 +132,8 @@ public class RoleController {
 	public RespondResult insertRole(@RequestBody(required=true)String data) {
 		logger.info("receive:[data:"+data+"]");
 		try {
-			RoleDO roleDO= JSONObject.parseObject(data, RoleDO.class);
-			roleService.insertRole(roleDO);
+
+			RoleDO roleDO=roleService.insertRole(data);
 			return RespondResult.success("添加数据成功",roleDO);
 		}catch (Exception e){
     		return RespondResult.error("添加数据失败");
@@ -162,8 +164,7 @@ public class RoleController {
 	public RespondResult updateRoleDO(@RequestBody(required=true)String data) {
 		logger.info("receive:[data:"+data+"]");
 		try {
-			RoleDO roleDO= JSONObject.parseObject(data, RoleDO.class);
-			roleDO = roleService.updateRole(roleDO);
+			RoleDO roleDO = roleService.updateRole(data);
 			return RespondResult.success("更新数据成功",roleDO);
 		}catch (Exception e){
     		return RespondResult.error("更新数据失败");
@@ -182,17 +183,20 @@ public class RoleController {
 	@ApiOperation(value = "更新部分数据",httpMethod = "PATCH",notes = "用于更新s_role表中对应的一条数据，为异步方法，结果会回调到异步地址中")
 	@ApiImplicitParams({
 	@ApiImplicitParam(name = "roleId", value = "roleId", paramType = "path", dataType = "String"),
+	@ApiImplicitParam(name = "menuId", value = "menuId数组", paramType = "query",allowMultiple=true, dataType = "String"),
 	@ApiImplicitParam(name = "data", value = "roleDO实体类数据", paramType = "body", dataType = "String")
 	})
 	@ApiResponses({ @ApiResponse(code = 551, message = "第三方平台错误"), @ApiResponse(code = 552, message = "本平台错误"),
 		@ApiResponse(code = 553, message = "权限不够"), @ApiResponse(code = 554, message = "请求数据有误"),
 		@ApiResponse(code = 555, message = "请求超时，请重试") })
 	public RespondResult updateRoleForField(@ApiParam(value = "roleId", required = true)@PathVariable("roleId")String roleId,
-                                            @RequestParam(value = "data",required=false) String data) {
+											@RequestBody(required = false) String data) {
 		logger.info("receive:[roleId:"+roleId+"-:deleteata:"+data+"]");
+
 		try {
 			RoleDO roleDO = roleService.updateRoleField(data, Long.valueOf(roleId));
 			return RespondResult.success("更新部分数据成功",roleDO);
+
 		}catch (Exception e){
 		return RespondResult.error("更新部分数据失败");
 		}

@@ -186,7 +186,7 @@ public class CollegeController {
 		@ApiResponse(code = 553, message = "权限不够"), @ApiResponse(code = 554, message = "请求数据有误"),
 		@ApiResponse(code = 555, message = "请求超时，请重试") })
 	public RespondResult updateCollegeForField(@ApiParam(value = "collegeId", required = true)@PathVariable("collegeId")String collegeId,
-                                               @RequestParam(value = "data",required=false) String data) {
+                                               @RequestBody String data) {
 		logger.info("receive:[collegeId:"+collegeId+"-:deleteata:"+data+"]");
 		try {
 			CollegeDO collegeDO = collegeService.updateCollegeField(data, Long.valueOf(collegeId));

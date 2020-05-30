@@ -95,4 +95,10 @@ public interface MenuService {
 	 * 获得所有菜单树
 	 */
 	public Tree<MenuDO> findAllMenus();
+
+
+	/**
+	 * 获取count
+	 */
+	public Integer countAllMenus();
 }

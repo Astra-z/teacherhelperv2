@@ -1,23 +1,32 @@
 package com.spm.teacherhelperv2.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spm.teacherhelperv2.dao.RoleMapper;
+import com.spm.teacherhelperv2.dao.RoleMenuMapper;
 import com.spm.teacherhelperv2.entity.RoleDO;
+import com.spm.teacherhelperv2.entity.RoleMenuDO;
 import com.spm.teacherhelperv2.manager.GetEntity;
+import com.spm.teacherhelperv2.service.RoleMenuService;
 import com.spm.teacherhelperv2.service.RoleService;
+import org.apache.commons.beanutils.ConvertUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * RoleServiceImpl服务实现类
@@ -26,11 +35,16 @@ import java.util.List;
  */
 @Service
 @Component("RoleService")
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class RoleServiceImpl implements RoleService {
 	private Logger logger = LoggerFactory.getLogger(RoleServiceImpl.class);
-	
+	private static final ObjectMapper objectMapper=new ObjectMapper();
 	@Autowired(required = false)
 	private RoleMapper roleMapper;
+
+	@Autowired
+	@Qualifier("RoleMenuService")
+	private RoleMenuServiceImpl roleMenuService;
 	private GetEntity getEntity = new GetEntity();
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -62,6 +76,12 @@ public class RoleServiceImpl implements RoleService {
 			}
 		}
         logger.info("receive:[fieldValue:"+fieldValue+"--fieldName:"+fieldName+"--page:"+page+"--limit:"+limit+"];Intermediate variable:[--annotationValue:"+annotationValue+"];--return:"+roleDOs);
+
+		roleDOs.forEach( role->{
+            List<RoleMenuDO> roleMenuDOList= this.roleMenuService.listRoleMenuByOther(role.getRoleId().toString(),"roleId",null,null);
+            List<Long> MenuList=roleMenuDOList.stream().map(RoleMenuDO::getMenuId).collect(Collectors.toList());
+            role.setMenuIdList(MenuList);
+        });
         return roleDOs;
 	}
 	
@@ -100,11 +120,47 @@ public class RoleServiceImpl implements RoleService {
      */
 	@Override
 	@Async
-	public RoleDO insertRole(RoleDO roleDO) {
+	public RoleDO insertRole(String data) {
+		//分离“menuIdList”
+		JSONObject fieldJson = JSONObject.parseObject(data);
+		fieldJson.remove("menuIdList");
+		//插入角色
+		String roledata=JSONObject.toJSONString(fieldJson);
+		RoleDO roleDO=JSONObject.parseObject(roledata,RoleDO.class);
 	    roleDO.setCreateTime(new Date());
 		roleDO.setModifyTime(new Date());
 	    this.roleMapper.insert(roleDO);
+	    //操作关联表
+		JSONObject fieldJsonAll = JSONObject.parseObject(data);
+		fieldJsonAll.put("roleId",roleDO.getRoleId());
+		this.insertRoleMenu(fieldJsonAll.toJSONString());
+
 		logger.info("receive:[roleDO:"+roleDO+"];--return:"+roleDO);
+		return roleDO;
+	}
+
+	/**
+	 * 操作关联表
+	 * @param data
+	 * @return
+	 */
+	private RoleDO insertRoleMenu(String data){
+		JSONObject fieldJson = JSONObject.parseObject(data);
+		JSONArray jsonArray = (JSONArray) fieldJson.get("menuIdList");
+		fieldJson.remove("menuIdList");
+		data=JSONObject.toJSONString(fieldJson);
+		RoleDO roleDO=JSONObject.parseObject(data,RoleDO.class);
+
+		//更新关联表rolemenu
+		List<RoleMenuDO> roleMenuDOs=new ArrayList<>();
+		jsonArray.forEach(menuID->{
+			RoleMenuDO roleMenuDO=new RoleMenuDO();
+			roleMenuDO.setMenuId(objectMapper.convertValue(menuID,Long.class));
+			roleMenuDO.setRoleId(roleDO.getRoleId());
+			roleMenuDOs.add(roleMenuDO);
+		});
+		this.roleMenuService.insertRoleMenuByBatchId(roleMenuDOs);
+
 		return roleDO;
 	}
 	
@@ -114,7 +170,10 @@ public class RoleServiceImpl implements RoleService {
 	 */
 	@Override
 	@Async
-	public RoleDO updateRole(RoleDO roleDO) {
+	public RoleDO updateRole(String data) {
+		//操作关联表
+		RoleDO roleDO=this.insertRoleMenu(data);
+
 	    roleDO.setModifyTime(new Date());
 		this.roleMapper.updateById(roleDO);
 		logger.info("receive:[roleDO:"+roleDO+"];--return:"+roleDO);
@@ -129,6 +188,22 @@ public class RoleServiceImpl implements RoleService {
 	@Async
 	public RoleDO updateRoleField(String data, Long roleId) {
 		Field[] fields = new RoleDO().getClass().getDeclaredFields();
+		JSONObject fieldJson = JSONObject.parseObject(data);
+		JSONArray jsonArray = (JSONArray) fieldJson.get("menuIdList");
+
+		//更新关联表rolemenu
+		List<RoleMenuDO> roleMenuDOs=new ArrayList<>();
+		jsonArray.forEach(menuID->{
+			RoleMenuDO roleMenuDO=new RoleMenuDO();
+			roleMenuDO.setMenuId(objectMapper.convertValue(menuID,Long.class));
+			roleMenuDO.setRoleId(roleId);
+			roleMenuDOs.add(roleMenuDO);
+		});
+		roleMenuService.insertRoleMenuByBatchId(roleMenuDOs);
+		//更新role表
+		//移除menuId
+		fieldJson.remove("menuIdList");
+		data=JSONObject.toJSONString(fieldJson);
 		RoleDO roleDO = (RoleDO) getEntity.setTableField(
 				data, RoleDO.class, fields, this.roleMapper.selectById(roleId));
 		roleDO.setModifyTime(new Date());
@@ -144,7 +219,8 @@ public class RoleServiceImpl implements RoleService {
 	@Async
 	public Boolean deleteRoleById(String roleId) {
 		Boolean flag = false;
-        int singleDelete = this.roleMapper.deleteById(roleId);	
+        int singleDelete = this.roleMapper.deleteById(roleId);
+        this.roleMenuService.deleteRoleMenuById(roleId);
         if(singleDelete == 1){
            flag = true; 
         }     	    
@@ -156,4 +232,5 @@ public class RoleServiceImpl implements RoleService {
     public List<RoleDO> findUserRole(String username) {
         return roleMapper.findUserRole(username);
     }
+
 }

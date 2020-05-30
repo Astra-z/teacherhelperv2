@@ -8,8 +8,10 @@ import java.util.Set;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GetEntity {
+	private static final ObjectMapper objectMapper=new ObjectMapper();
 
 	public String getAnnotationValue(Field[] fields, String fieldName) {
 		String annotationValue = null;
@@ -43,7 +45,7 @@ public class GetEntity {
 			}			
 			try {
 				Method method = clazz.getDeclaredMethod(methodName, new Class[] { typeClass });
-				method.invoke(obj, new Object[] { getClassTypeValue(typeClass, fieldJson.get(fieldName)) });
+				method.invoke(obj, new Object[] { objectMapper.convertValue(fieldJson.get(fieldName),typeClass)});
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -53,37 +55,37 @@ public class GetEntity {
 	}
 
 	private Object getClassTypeValue(Class<?> typeClass, Object value) {
-		if (typeClass == int.class ) {
+		if (typeClass == Integer.class) {
 			if (null == value) {
 				return 0;
 			}
 			return value;
-		} else if (typeClass == short.class) {
+		} else if (typeClass == Short.class) {
 			if (null == value) {
 				return 0;
 			}
-			return value;
-		} else if (typeClass == byte.class) {
+			return ((Integer) value).shortValue();
+		} else if (typeClass == Byte.class) {
 			if (null == value) {
 				return 0;
 			}
-			return value;
-		} else if (typeClass == double.class) {
+			return ((Integer) value).byteValue();
+		} else if (typeClass == Double.class) {
 			if (null == value) {
 				return 0;
 			}
-			return value;
-		} else if (typeClass == long.class) {
+			return ((Integer) value).doubleValue();
+		} else if (typeClass == Long.class) {
 			if (null == value) {
 				return 0;
 			}
-			return value;
+			return ((Integer) value).longValue();
 		} else if (typeClass == String.class) {
 			if (null == value) {
 				return "";
 			}
 			return value;
-		} else if (typeClass == boolean.class) {
+		} else if (typeClass == Boolean.class) {
 			if (null == value) {
 				return true;
 			}

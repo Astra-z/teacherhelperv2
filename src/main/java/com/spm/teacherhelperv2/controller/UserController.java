@@ -208,7 +208,7 @@ public class UserController {
 		@ApiResponse(code = 553, message = "权限不够"), @ApiResponse(code = 554, message = "请求数据有误"),
 		@ApiResponse(code = 555, message = "请求超时，请重试") })
 	public RespondResult updateUserForField(@ApiParam(value = "userId", required = true)@PathVariable("userId")String userId,
-                                            @RequestParam(value = "data",required=false) String data) {
+                                            @RequestBody String data) {
 		logger.info("receive:[userId:"+userId+"-:deleteata:"+data+"]");
 		try {
 			UserDO userDO = userService.updateUserField(data, Long.valueOf(userId));

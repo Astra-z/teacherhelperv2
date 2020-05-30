@@ -1,5 +1,6 @@
 package com.spm.teacherhelperv2.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.spm.teacherhelperv2.entity.RoleMenuDO;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  * @author lxq
  * @since 2020-05-16
  */
-public interface RoleMenuService {
+public interface RoleMenuService  {
 	
 	/**
 	 * 根据其他信息查询数据

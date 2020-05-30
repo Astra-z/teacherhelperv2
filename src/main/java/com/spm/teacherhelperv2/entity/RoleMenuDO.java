@@ -30,7 +30,7 @@ public class RoleMenuDO implements Serializable {
      *  角色ID
      */
     @ApiModelProperty(value = "角色ID")
-    @TableId(value = "ROLE_ID", type = IdType.AUTO)
+    @TableField("ROLE_ID")
     private Long roleId;
     /**
      *  菜单/按钮ID

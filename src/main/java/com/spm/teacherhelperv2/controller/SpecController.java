@@ -188,7 +188,7 @@ public class SpecController {
 		@ApiResponse(code = 553, message = "权限不够"), @ApiResponse(code = 554, message = "请求数据有误"),
 		@ApiResponse(code = 555, message = "请求超时，请重试") })
 	public RespondResult updateSpecForField(@ApiParam(value = "specId", required = true)@PathVariable("specId")String specId,
-                                            @RequestParam(value = "data",required=false) String data) {
+                                            @RequestBody String data) {
 		logger.info("receive:[specId:"+specId+"-:deleteata:"+data+"]");
 		try {
 			SpecDO specDO = specService.updateSpecField(data, Long.valueOf(specId));

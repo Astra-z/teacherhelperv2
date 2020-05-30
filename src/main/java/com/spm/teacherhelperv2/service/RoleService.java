@@ -39,17 +39,17 @@ public interface RoleService {
 	
 	/**
 	 * 插入新的数据
-	 * @param roleDO RoleDO实体对象
+	 * @param data json data
      * @return String 
 	 */
-	public RoleDO insertRole(RoleDO roleDO);
+	public RoleDO insertRole(String data);
 		
 	/**
 	 * 更新数据
-	 * @param roleDO RoleDO实体对象
+	 * @param data json 数据
      * @return String
 	 */
-	public RoleDO updateRole(RoleDO roleDO);
+	public RoleDO updateRole(String data);
 	
 	/**
 	 * 更新部分数据

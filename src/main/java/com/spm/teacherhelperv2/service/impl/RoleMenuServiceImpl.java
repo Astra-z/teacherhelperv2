@@ -2,6 +2,7 @@ package com.spm.teacherhelperv2.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.spm.teacherhelperv2.dao.RoleMenuMapper;
 import com.spm.teacherhelperv2.entity.RoleMenuDO;
 import com.spm.teacherhelperv2.manager.GetEntity;
@@ -15,9 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * RoleMenuServiceImpl服务实现类
@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Service
 @Component("RoleMenuService")
-public class RoleMenuServiceImpl implements RoleMenuService {
+public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper,RoleMenuDO> implements RoleMenuService {
 	private Logger logger = LoggerFactory.getLogger(RoleMenuServiceImpl.class);
 	
 	@Autowired(required = false)
@@ -64,7 +64,7 @@ public class RoleMenuServiceImpl implements RoleMenuService {
         logger.info("receive:[fieldValue:"+fieldValue+"--fieldName:"+fieldName+"--page:"+page+"--limit:"+limit+"];Intermediate variable:[--annotationValue:"+annotationValue+"];--return:"+roleMenuDOs);
         return roleMenuDOs;
 	}
-	
+
 	    /**
      * 实现getRoleMenuById()方法
      * 用于根据Id查询对应单条数据 
@@ -105,6 +105,16 @@ public class RoleMenuServiceImpl implements RoleMenuService {
 		logger.info("receive:[roleMenuDO:"+roleMenuDO+"];--return:"+roleMenuDO);
 		return roleMenuDO;
 	}
+
+	public Boolean insertRoleMenuByBatchId(List<RoleMenuDO> roleMenuDOs) {
+		Long roleids=roleMenuDOs.get(0).getRoleId();
+		Map<String, Object> columnMap = new HashMap<>();
+		columnMap.put("ROLE_ID",roleids);
+		this.roleMenuMapper.deleteByMap(columnMap);
+		this.saveBatch(roleMenuDOs);
+		return true;
+	}
+
 	
 	/**
 	 *  实现updateRoleMenu()方法

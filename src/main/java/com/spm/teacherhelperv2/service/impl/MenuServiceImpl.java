@@ -68,8 +68,13 @@ public class MenuServiceImpl implements MenuService {
         logger.info("receive:[fieldValue:"+fieldValue+"--fieldName:"+fieldName+"--page:"+page+"--limit:"+limit+"];Intermediate variable:[--annotationValue:"+annotationValue+"];--return:"+menuDOs);
         return menuDOs;
 	}
-	
-	    /**
+
+	@Override
+	public Integer countAllMenus() {
+		return menuMapper.selectCount(new QueryWrapper<>());
+	}
+
+	/**
      * 实现getMenuById()方法
      * 用于根据Id查询对应单条数据 
      */

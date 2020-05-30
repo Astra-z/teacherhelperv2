@@ -192,7 +192,7 @@ public class CourseFrequencyController {
 		@ApiResponse(code = 553, message = "权限不够"), @ApiResponse(code = 554, message = "请求数据有误"),
 		@ApiResponse(code = 555, message = "请求超时，请重试") })
 	public RespondResult updateCourseFrequencyForField(@ApiParam(value = "courseFrequencyId", required = true)@PathVariable("courseFrequencyId")String courseFrequencyId,
-                                                       @RequestParam(value = "data",required=false) String data) {
+                                                       @RequestBody String data) {
 		logger.info("receive:[courseFrequencyId:"+courseFrequencyId+"-:deleteata:"+data+"]");
 		try {
 			CourseFrequencyDO courseFrequencyDO = courseFrequencyService.updateCourseFrequencyField(data, Long.valueOf(courseFrequencyId));
