@@ -10,7 +10,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Transient;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * CollegeDO实体类
@@ -39,6 +41,10 @@ public class CollegeDO implements Serializable {
     @TableField("COLLEGE_NAME")
     private String collegeName;
 
+
+    @Transient
+    @TableField(exist = false)
+    private List<SpecDO> specList;
     
     protected Serializable pkVal() {
         return null;

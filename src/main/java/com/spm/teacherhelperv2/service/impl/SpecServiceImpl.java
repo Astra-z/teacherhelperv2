@@ -144,7 +144,8 @@ public class SpecServiceImpl implements SpecService {
 	@Async
 	public Boolean deleteSpecById(String specId) {
 		Boolean flag = false;
-        int singleDelete = this.specMapper.deleteById(specId);	
+		Integer Id= Integer.valueOf(specId);
+        int singleDelete = this.specMapper.deleteById(Id);
         if(singleDelete == 1){
            flag = true; 
         }     	    

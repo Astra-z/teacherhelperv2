@@ -6,9 +6,11 @@ import com.spm.teacherhelperv2.dao.CollegeMapper;
 import com.spm.teacherhelperv2.entity.CollegeDO;
 import com.spm.teacherhelperv2.manager.GetEntity;
 import com.spm.teacherhelperv2.service.CollegeService;
+import com.spm.teacherhelperv2.service.SpecService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,10 @@ public class CollegeServiceImpl implements CollegeService {
 	
 	@Autowired(required = false)
 	private CollegeMapper collegeMapper;
+
+	@Autowired
+	@Qualifier("SpecService")
+	private SpecService specService;
 	private GetEntity getEntity = new GetEntity();
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -61,8 +67,11 @@ public class CollegeServiceImpl implements CollegeService {
 	            collegeDOs = this.collegeMapper.selectPage(lpage,null).getRecords();
 			}
 		}
-        logger.info("receive:[fieldValue:"+fieldValue+"--fieldName:"+fieldName+"--page:"+page+"--limit:"+limit+"];Intermediate variable:[--annotationValue:"+annotationValue+"];--return:"+collegeDOs);
-        return collegeDOs;
+		logger.info("receive:[fieldValue:"+fieldValue+"--fieldName:"+fieldName+"--page:"+page+"--limit:"+limit+"];Intermediate variable:[--annotationValue:"+annotationValue+"];--return:"+collegeDOs);
+        collegeDOs.forEach( collegeDO->{
+        	collegeDO.setSpecList(this.specService.listSpecByOther(collegeDO.getCollegeId().toString(),"collegeId",null,null));
+		});
+		return collegeDOs;
 	}
 	
 	    /**
@@ -140,7 +149,8 @@ public class CollegeServiceImpl implements CollegeService {
 	@Async
 	public Boolean deleteCollegeById(String collegeId) {
 		Boolean flag = false;
-        int singleDelete = this.collegeMapper.deleteById(collegeId);	
+		Integer Id=Integer.valueOf(collegeId);
+        int singleDelete = this.collegeMapper.deleteById(Id);
         if(singleDelete == 1){
            flag = true; 
         }     	    
