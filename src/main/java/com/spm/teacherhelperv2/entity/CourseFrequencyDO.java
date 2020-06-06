@@ -49,19 +49,26 @@ public class CourseFrequencyDO implements Serializable {
     @TableField("WEEKDAY")
     private Integer weekday;
     /**
+     *
+     */
+    @ApiModelProperty(value = "")
+    @TableField("END_LESSON")
+    private Integer endLesson;
+    /**
+     *
+     */
+    @ApiModelProperty(value = "")
+    @TableField("START_LESSON")
+    private Integer startLesson;
+    /**
      *  
      */
     @ApiModelProperty(value = "")
     @TableField("START_TIME")
+    @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd")
     private Date startTime;
     /**
-     *  
-     */
-    @ApiModelProperty(value = "")
-    @TableField("END_TIME")
-    private Date endTime;
-    /**
-     *  
+     *
      */
     @ApiModelProperty(value = "")
     @TableField("CREATE_TIME")
@@ -83,13 +90,14 @@ public class CourseFrequencyDO implements Serializable {
     @Override
     public String toString() {
         return "CourseFrequencyDO{" +
-         "courseFrequencyId=" + courseFrequencyId
-         +", courseid=" + courseid 
-         +", weekday=" + weekday 
-         +", startTime=" + startTime 
-         +", endTime=" + endTime 
-         +", createTime=" + createTime 
-         +", modifyTime=" + modifyTime 
-        +"}";
+                "courseFrequencyId=" + courseFrequencyId +
+                ", courseid=" + courseid +
+                ", weekday=" + weekday +
+                ", endLesson=" + endLesson +
+                ", startLesson=" + startLesson +
+                ", startTime=" + startTime +
+                ", createTime=" + createTime +
+                ", modifyTime=" + modifyTime +
+                '}';
     }
 }

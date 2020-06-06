@@ -11,8 +11,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * CourseDO实体类
@@ -46,20 +48,7 @@ public class CourseDO implements Serializable {
     @ApiModelProperty(value = "")
     @TableField("TERM")
     private String term;
-    /**
-     *  
-     */
-    @ApiModelProperty(value = "")
-    @TableField("END_TIME")
-    @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
-    private Date endTime;
-    /**
-     *  
-     */
-    @ApiModelProperty(value = "")
-    @TableField("START_TIME")
-    @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
-    private Date startTime;
+
     /**
      *  
      */
@@ -73,13 +62,19 @@ public class CourseDO implements Serializable {
     @TableField("SPEC_ID")
     private Integer specId;
     /**
+     *
+     */
+    @ApiModelProperty(value = "")
+    @TableField("REMARK")
+    private String remark;
+    /**
      *  
      */
     @ApiModelProperty(value = "")
-    @TableField("CLASS_ID")
-    private Integer classId;
+    @TableField("COURSE_ADDRESS")
+    private String courseAddress;
     /**
-     *  
+     *
      */
     @ApiModelProperty(value = "")
     @TableField("CREATE_TIME")
@@ -93,7 +88,15 @@ public class CourseDO implements Serializable {
     @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
     private Date modifyTime;
 
-    
+    @Transient
+    @TableField(exist = false)
+    private List<CourseFrequencyDO> courseTimeList;
+
+    @Transient
+    @TableField(exist = false)
+    private SpecDO specDO;
+
+
     protected Serializable pkVal() {
         return null;
     }
@@ -101,16 +104,14 @@ public class CourseDO implements Serializable {
     @Override
     public String toString() {
         return "CourseDO{" +
-         "courseId=" + courseId
-         +", courseName=" + courseName 
-         +", term=" + term 
-         +", endTime=" + endTime 
-         +", startTime=" + startTime 
-         +", courseTeacher=" + courseTeacher 
-         +", specId=" + specId 
-         +", classId=" + classId 
-         +", createTime=" + createTime 
-         +", modifyTime=" + modifyTime 
-        +"}";
+                "courseId=" + courseId +
+                ", courseName='" + courseName + '\'' +
+                ", term='" + term + '\'' +
+                ", courseTeacher='" + courseTeacher + '\'' +
+                ", specId=" + specId +
+                ", remark='" + remark + '\'' +
+                ", createTime=" + createTime +
+                ", modifyTime=" + modifyTime +
+                '}';
     }
 }

@@ -2,13 +2,18 @@ package com.spm.teacherhelperv2.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.spm.teacherhelperv2.dao.CourseFrequencyMapper;
 import com.spm.teacherhelperv2.dao.CourseMapper;
+import com.spm.teacherhelperv2.dao.SpecMapper;
 import com.spm.teacherhelperv2.entity.CourseDO;
+import com.spm.teacherhelperv2.entity.CourseFrequencyDO;
 import com.spm.teacherhelperv2.manager.GetEntity;
+import com.spm.teacherhelperv2.service.CourseFrequencyService;
 import com.spm.teacherhelperv2.service.CourseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -30,7 +35,17 @@ public class CourseServiceImpl implements CourseService {
 	private Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
 	
 	@Autowired(required = false)
-	private CourseMapper courseMapper;   
+	private CourseMapper courseMapper;
+
+	@Autowired(required = false)
+	private SpecMapper specMapper;
+
+	@Autowired
+	@Qualifier("CourseFrequencyService")
+	private CourseFrequencyService courseFrequencyService;
+
+	@Autowired(required = false)
+	private CourseFrequencyMapper courseFrequencyMapper;
 	private GetEntity getEntity = new GetEntity();
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -61,17 +76,27 @@ public class CourseServiceImpl implements CourseService {
 	            courseDOs = this.courseMapper.selectPage(lpage,null).getRecords();
 			}
 		}
+		courseDOs.forEach(courseDO -> {
+			courseDO.setSpecDO(specMapper.selectById(courseDO.getSpecId()));
+			courseDO.setCourseTimeList(courseFrequencyMapper
+					.selectList(new QueryWrapper<CourseFrequencyDO>()
+					.eq("courseId",courseDO.getCourseId())));
+		});
         logger.info("receive:[fieldValue:"+fieldValue+"--fieldName:"+fieldName+"--page:"+page+"--limit:"+limit+"];Intermediate variable:[--annotationValue:"+annotationValue+"];--return:"+courseDOs);
         return courseDOs;
 	}
 	
-	    /**
+	/**
      * 实现getCourseById()方法
      * 用于根据Id查询对应单条数据 
      */
 	@Override
 	public CourseDO getCourseById(Long courseId) {
 		CourseDO courseDO=this.courseMapper.selectById(courseId);
+		courseDO.setCourseTimeList(this.courseFrequencyMapper
+				.selectList(new QueryWrapper<CourseFrequencyDO>()
+						.eq("courseId",courseDO.getCourseId())));
+		courseDO.setSpecDO(this.specMapper.selectById(courseDO.getSpecId()));
 		logger.info("receive:[courseId:"+courseId+"];--return:"+courseDO);
 		return courseDO;
 	}
@@ -103,7 +128,15 @@ public class CourseServiceImpl implements CourseService {
 	public CourseDO insertCourse(CourseDO courseDO) {
 	    courseDO.setCreateTime(new Date());
 		courseDO.setModifyTime(new Date());
+		List<CourseFrequencyDO> courseTimeList=courseDO.getCourseTimeList();
+		courseDO.setCourseTimeList(null);
 	    this.courseMapper.insert(courseDO);
+	    if(courseTimeList!=null){
+	    	courseTimeList.forEach(courseTime->{
+	    		courseTime.setCourseid(courseDO.getCourseId());
+	    		this.courseFrequencyService.insertCourseFrequency(courseTime);
+			});
+		}
 		logger.info("receive:[courseDO:"+courseDO+"];--return:"+courseDO);
 		return courseDO;
 	}
