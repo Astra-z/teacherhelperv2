@@ -1,6 +1,7 @@
 package com.spm.teacherhelperv2.controller;
 
 import com.spm.teacherhelperv2.config.WebSocketServer;
+import com.spm.teacherhelperv2.entity.NoteDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +25,10 @@ public class SocketController {
     @GetMapping("/webSocketSend")
     @ResponseBody
     public void socket(@RequestParam("userId")String userId) throws InterruptedException {
+        NoteDO noteDO=new NoteDO();
         for (int i = 0; i < 10; i++){
             Thread.sleep(1000);
-            webSocket.sendInfo(userId, ""+i);
+            webSocket.sendObjMessage(userId, noteDO);
         }
     }
 }

@@ -1,12 +1,17 @@
 package com.spm.teacherhelperv2.config;
 
+import com.alibaba.fastjson.JSON;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -15,84 +20,69 @@ import java.util.concurrent.atomic.AtomicInteger;
  * author: Zhangjr
  * version: 1.0
  */
-@ServerEndpoint("/webSocket/{sid}")
+@ServerEndpoint("/webSocket/{userId}")
 @Component
 public class WebSocketServer {
-    //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
-    private static AtomicInteger onlineNum = new AtomicInteger();
+    private Session session;
 
-    //concurrent包的线程安全Set，用来存放每个客户端对应的WebSocketServer对象。
-    private static ConcurrentHashMap<String, Session> sessionPools = new ConcurrentHashMap<>();
+    private static CopyOnWriteArraySet<WebSocketServer> webSockets =new CopyOnWriteArraySet<>();
+    private static Map<String,Session> sessionPool = new HashMap<String,Session>();
 
-    //发送消息
-    public void sendMessage(Session session, String message) throws IOException {
-        if(session != null){
-            synchronized (session) {
-    //                System.out.println("发送数据：" + message);
-                session.getBasicRemote().sendText(message);
-            }
-        }
-    }
-
-    //给指定用户发送信息
-    public void sendInfo(String userName, String message){
-        Session session = sessionPools.get(userName);
-        try {
-            sendMessage(session, message);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    //建立连接成功调用
     @OnOpen
-    public void onOpen(Session session, @PathParam(value = "sid") String userName){
-        sessionPools.put(userName, session);
-        addOnlineCount();
-        System.out.println(userName + "加入webSocket！当前人数为" + onlineNum);
-        try {
-            sendMessage(session, "欢迎" + userName + "加入连接！");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void onOpen(Session session, @PathParam(value="userId")String userId) {
+        this.session = session;
+        webSockets.add(this);
+        sessionPool.put(userId, session);
+        System.out.println("【websocket消息】有新的连接，总数为:"+webSockets.size());
     }
 
-    //关闭连接时调用
     @OnClose
-    public void onClose(@PathParam(value = "sid") String userName){
-        sessionPools.remove(userName);
-        subOnlineCount();
-        System.out.println(userName + "断开webSocket连接！当前人数为" + onlineNum);
+    public void onClose() {
+        webSockets.remove(this);
+        System.out.println("【websocket消息】连接断开，总数为:"+webSockets.size());
     }
 
-    //收到客户端信息
     @OnMessage
-    public void onMessage(String message) throws IOException{
-        message = "客户端：" + message + ",已收到";
-        System.out.println(message);
-        for (Session session: sessionPools.values()) {
+    public void onMessage(String message) {
+        System.out.println("【websocket消息】收到客户端消息:"+message);
+    }
+
+    // 此为广播消息
+    public void sendAllMessage(String message) {
+        for(WebSocketServer webSocket : webSockets) {
+            System.out.println("【websocket消息】广播消息:"+message);
             try {
-                sendMessage(session, message);
-            } catch(Exception e){
+                webSocket.session.getAsyncRemote().sendText(message);
+            } catch (Exception e) {
                 e.printStackTrace();
-                continue;
             }
         }
     }
 
-    //错误时调用
-    @OnError
-    public void onError(Session session, Throwable throwable){
-        System.out.println("发生错误");
-        throwable.printStackTrace();
+    // 此为单点消息 (发送文本)
+    public void sendTextMessage(String userId, String message) {
+        Session session = sessionPool.get(userId);
+        if (session != null) {
+            try {
+                session.getBasicRemote().sendText(message);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public static void addOnlineCount(){
-        onlineNum.incrementAndGet();
+    // 此为单点消息 (发送对象)
+    public Boolean sendObjMessage(String userId, Object message) {
+        Session session = sessionPool.get(userId);
+        if (session != null) {
+            try {
+                session.getAsyncRemote().sendText(JSON.toJSONString(message));
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return false;
     }
-
-    public static void subOnlineCount() {
-        onlineNum.decrementAndGet();
-    }
-
 }
