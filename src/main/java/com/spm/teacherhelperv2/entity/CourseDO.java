@@ -48,6 +48,26 @@ public class CourseDO implements Serializable {
     @ApiModelProperty(value = "")
     @TableField("TERM")
     private String term;
+    /**
+     *
+     */
+    @ApiModelProperty(value = "")
+    @TableField("TEACHER_ID")
+    private String teacherId;
+
+    /**
+     *
+     */
+    @ApiModelProperty(value = "")
+    @TableField("STUDENT_NUM")
+    private Integer studentNum;
+
+    /**
+     *
+     */
+    @ApiModelProperty(value = "")
+    @TableField("MAX_NUM")
+    private Integer maxNum;
 
     /**
      *  

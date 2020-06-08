@@ -42,7 +42,7 @@ public class UserDO implements Serializable {
      */
     @ApiModelProperty(value = "")
     @TableField("SID")
-    private Long sid;
+    private String sid;
     /**
      *  
      */

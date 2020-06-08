@@ -11,7 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -139,7 +142,6 @@ public class CourseController {
 		}catch (Exception e){
     		return RespondResult.error("添加数据失败");
     	}
-
 	}
 
 	
@@ -206,7 +208,7 @@ public class CourseController {
 	
     /**
      * 根据Id删除数据
-     * @param courseDOId courseDOId
+     * @param
      * @return GetResult<Boolean>(suatus:状态码,msg:消息,data:处理结果)
      */
 	@DeleteMapping("/{courseId}")
@@ -225,6 +227,47 @@ public class CourseController {
         }catch (Exception e){
         	return RespondResult.error("删除失败");
         }
+	}
 
-	}	
+	@PostMapping("/uploadhomework")
+	@ResponseBody
+	public RespondResult uploadCourseHomework(@RequestParam("file") MultipartFile file,
+											  @RequestParam("username") String username,
+											  @RequestParam("courseId") String courseId,
+											  @RequestParam("courseHomeworkId")String courseHomeworkId){
+		Boolean flag=null;
+		flag=this.courseService.uploadCourseHomework(file,courseId,courseHomeworkId,username);
+		if(flag){
+			return RespondResult.success("上传成功",null);
+		}
+		else {
+			return RespondResult.error("上传失败");
+		}
+	}
+
+	@GetMapping("/homeworklist")
+	@ResponseBody
+	public RespondResult gethomeworklist(@RequestParam("courseId")String courseId,
+										 @RequestParam("courseHomeworkId")String courseHomeworkId,
+										 @RequestParam(value = "username",required = false) String username){
+		try {
+			return RespondResult.success("查询成功",this.courseService.getMyCourseHomeworkList(courseId,courseHomeworkId,username));
+		}
+		catch(Exception e) {
+			return RespondResult.error("查询失败");
+		}
+	}
+
+
+	@GetMapping("/getMyCourse/{studentId}")
+	@ResponseBody
+	public RespondResult getMyCourselist(@PathVariable(value = "studentId")String studentId){
+		try {
+			return RespondResult.success("查询成功",this.courseService.getMyCourseList(studentId));
+		}
+		catch(Exception e) {
+			return RespondResult.error("查询失败");
+		}
+	}
+
 }

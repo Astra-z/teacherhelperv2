@@ -8,6 +8,7 @@ import com.spm.teacherhelperv2.entity.RoleDO;
 import com.spm.teacherhelperv2.entity.UserDO;
 import com.spm.teacherhelperv2.manager.GetEntity;
 import com.spm.teacherhelperv2.service.UserService;
+import com.spm.teacherhelperv2.util.MD5Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,6 +135,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Async
 	public UserDO insertUser(UserDO userDO) {
+		userDO.setPassword(MD5Utils.encrypt(userDO.getUsername(),userDO.getPassword()));
 	    userDO.setCreateTime(new Date());
 		userDO.setModifyTime(new Date());
 	    this.userMapper.insert(userDO);

@@ -1,6 +1,7 @@
 package com.spm.teacherhelperv2.service;
 
 import com.spm.teacherhelperv2.entity.CourseDO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -64,5 +65,30 @@ public interface CourseService {
 	 * @param courseId courseId
      * @return String
 	 */
-	public Boolean deleteCourseById(String courseId);	
+	public Boolean deleteCourseById(String courseId);
+
+
+	/**
+	 * 上传作业
+	 * @param file
+	 * @return
+	 */
+	public Boolean uploadCourseHomework(MultipartFile file,String courseId,String courseHomeworkId,String username);
+
+
+	/**
+	 *
+	 * @param courseId
+	 * @param courseHomeworkId
+	 * @param username
+	 */
+	public List<String> getMyCourseHomeworkList(String courseId,String courseHomeworkId,String username);
+
+
+	/**
+	 *
+	 * @param studentId
+	 * @return
+	 */
+	public List<CourseDO> getMyCourseList(String studentId);
 }

@@ -2,13 +2,17 @@ package com.spm.teacherhelperv2.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.spm.teacherhelperv2.dao.CourseMapper;
 import com.spm.teacherhelperv2.dao.ScoreMapper;
+import com.spm.teacherhelperv2.entity.CourseDO;
 import com.spm.teacherhelperv2.entity.ScoreDO;
 import com.spm.teacherhelperv2.manager.GetEntity;
+import com.spm.teacherhelperv2.service.CourseService;
 import com.spm.teacherhelperv2.service.ScoreService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -31,6 +35,13 @@ public class ScoreServiceImpl implements ScoreService {
 	
 	@Autowired(required = false)
 	private ScoreMapper scoreMapper;
+
+	@Autowired
+	@Qualifier("CourseService")
+	private CourseService courseService;
+
+	@Autowired(required = false)
+	private CourseMapper courseMapper;
 	private GetEntity getEntity = new GetEntity();
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -101,6 +112,18 @@ public class ScoreServiceImpl implements ScoreService {
 	@Override
 	@Async
 	public ScoreDO insertScore(ScoreDO scoreDO) {
+		//同步检查选课人数是否已满（待做）
+		synchronized(this){
+			CourseDO courseDO= courseMapper.selectById(scoreDO.getCourseId());
+			if(courseDO.getStudentNum()>=courseDO.getMaxNum()){
+				try {
+					throw new Exception("课程已满");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			courseMapper.addStundentNum(scoreDO.getCourseId());
+		}
 	    scoreDO.setCreateTime(new Date());
 		scoreDO.setModifyTime(new Date());
 	    this.scoreMapper.insert(scoreDO);

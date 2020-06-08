@@ -5,7 +5,7 @@ import org.apache.shiro.util.ByteSource;
 
 public class MD5Utils {
 
-	protected MD5Utils(){
+	private MD5Utils(){
 
 	}
 

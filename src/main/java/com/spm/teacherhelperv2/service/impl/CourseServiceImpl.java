@@ -7,9 +7,13 @@ import com.spm.teacherhelperv2.dao.CourseMapper;
 import com.spm.teacherhelperv2.dao.SpecMapper;
 import com.spm.teacherhelperv2.entity.CourseDO;
 import com.spm.teacherhelperv2.entity.CourseFrequencyDO;
+import com.spm.teacherhelperv2.entity.ScoreDO;
 import com.spm.teacherhelperv2.manager.GetEntity;
 import com.spm.teacherhelperv2.service.CourseFrequencyService;
 import com.spm.teacherhelperv2.service.CourseService;
+import com.spm.teacherhelperv2.service.ScoreService;
+import com.spm.teacherhelperv2.util.MyFileUtils;
+import org.apache.tomcat.util.security.Escape;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +21,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * CourseServiceImpl服务实现类
@@ -40,9 +48,14 @@ public class CourseServiceImpl implements CourseService {
 	@Autowired(required = false)
 	private SpecMapper specMapper;
 
+
 	@Autowired
 	@Qualifier("CourseFrequencyService")
 	private CourseFrequencyService courseFrequencyService;
+
+	@Autowired
+	@Qualifier("ScoreService")
+	private ScoreService scoreService;
 
 	@Autowired(required = false)
 	private CourseFrequencyMapper courseFrequencyMapper;
@@ -184,4 +197,64 @@ public class CourseServiceImpl implements CourseService {
         logger.info("receive:[courseId:"+courseId+"];Intermediate variable:[--singleDelete:"+singleDelete+"];--return:"+flag);
 		return flag;	
 	}
+
+	@Override
+	public Boolean uploadCourseHomework(MultipartFile file,String courseId,String courseHomeworkId,String username){
+		if (file.isEmpty()) {
+			return false;
+		}
+		String fileName = file.getOriginalFilename();
+		String filePath = "F:\\IJ\\teacherhelperv2\\courses\\"+courseId+"\\"+courseHomeworkId+"\\"+username+"\\";
+		File dest = new File(filePath + fileName);
+		File parentDir= dest.getParentFile();
+		try {
+			if(!parentDir.exists()){
+				parentDir.mkdirs();
+			}
+			file.transferTo(dest);
+			logger.info("上传成功");
+			return true;
+		} catch (IOException e) {
+			logger.error(e.toString(), e);
+		}
+		return false;
+	}
+
+	@Override
+	public List<String> getMyCourseHomeworkList(String courseId,String courseHomeworkId,String username){
+		if(username!=null){
+			String filePath = "F:\\IJ\\teacherhelperv2\\courses\\"+courseId+"\\"+courseHomeworkId+"\\"+username+"\\";
+			File coursefile=new File(filePath);
+			if(!coursefile.exists()){
+				coursefile.mkdirs();
+			}
+			List<String> courseHomeworkList=MyFileUtils.findAllMyFileNames(coursefile);
+			return courseHomeworkList;
+		}
+		else {
+			String filePath = "F:\\IJ\\teacherhelperv2\\courses\\"+courseId+"\\"+courseHomeworkId+"\\";
+			File coursefile=new File(filePath);
+			if(!coursefile.exists()){
+				coursefile.mkdirs();
+			}
+			List<String> courseHomeworkList=new ArrayList<>();
+			courseHomeworkList=MyFileUtils.findAllFileNames(coursefile,"",courseHomeworkList);
+			return courseHomeworkList;
+		}
+	}
+
+	@Override
+	public List<CourseDO> getMyCourseList(String studentId){
+		List<ScoreDO> scoreDOList=this.scoreService.listScoreByOther(studentId,"studentId",null,null);
+		List<Integer> courseIdList=scoreDOList.stream().map(ScoreDO::getCourseId).collect(Collectors.toList());
+		List<CourseDO> courseDOs= this.courseMapper.selectBatchIds(courseIdList);
+		courseDOs.forEach(courseDO -> {
+			courseDO.setSpecDO(specMapper.selectById(courseDO.getSpecId()));
+			courseDO.setCourseTimeList(courseFrequencyMapper
+					.selectList(new QueryWrapper<CourseFrequencyDO>()
+							.eq("courseId",courseDO.getCourseId())));
+		});
+		return courseDOs;
+	}
+
 }
