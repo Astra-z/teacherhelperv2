@@ -109,7 +109,7 @@ public class NoteServiceImpl implements NoteService {
 	    noteDO.setCreateTime(new Date());
 		noteDO.setModifyTime(new Date());
 	    this.noteMapper.insert(noteDO);
-		delayedSender.send(noteDO,noteDO.getEndTime().getTime()-noteDO.getStartTime().getTime());
+		delayedSender.send(noteDO,noteDO.getEndTime().getTime()-noteDO.getCreateTime().getTime());
 		logger.info("receive:[noteDO:"+noteDO+"];--return:"+noteDO);
 		return noteDO;
 	}

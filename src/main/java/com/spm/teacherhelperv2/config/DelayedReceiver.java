@@ -35,8 +35,11 @@ public class DelayedReceiver {
         logger.info("接收时间:" + sdf.format(new Date()));
         logger.info("消息内容：" + noteDO);
         //如果用户在线直接发送消息
-        Boolean flag=webSocketServer.sendObjMessage(noteDO.getUserId().toString(),noteDO);
-        //如果发送失败说明用户不在线则存到本地的hashmap userNoteList中
+        //统一后面的数据格式，都用list发送
+        List<NoteDO> list=new ArrayList<>();
+        list.add(noteDO);
+        Boolean flag=webSocketServer.sendObjMessage(noteDO.getUserId().toString(),list);
+        //如果发送失败说明用户不在线则存到本地的缓存hashmap userNoteList中
         if(!flag){
             if(UserNoteDO.userNoteList.containsKey(noteDO.getUserId())){
                 UserNoteDO.userNoteList.get(noteDO.getUserId()).add(noteDO);

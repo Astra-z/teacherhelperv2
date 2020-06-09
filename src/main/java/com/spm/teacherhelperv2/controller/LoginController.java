@@ -1,5 +1,6 @@
 package com.spm.teacherhelperv2.controller;
 
+import com.spm.teacherhelperv2.config.WebSocketServer;
 import com.spm.teacherhelperv2.entity.UserDO;
 import com.spm.teacherhelperv2.manager.RespondResult;
 import com.spm.teacherhelperv2.service.UserService;
@@ -31,6 +32,10 @@ public class LoginController {
     @Autowired
     @Qualifier("UserService")
     UserService userService;
+
+    @Autowired
+    private WebSocketServer webSocket;
+
     @RequestMapping("/unauth")
     public RespondResult unuth(){
         return RespondResult.error("没有权限！");
@@ -60,5 +65,11 @@ public class LoginController {
         map.put("user",userDO);
         map.put("Authorization",subject.getSession().getId());
         return RespondResult.success("登录成功",map);
+    }
+
+    @GetMapping("Loginout")
+    @ResponseBody
+    public void loginout(@RequestParam("userId")String userId){
+
     }
 }

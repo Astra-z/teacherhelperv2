@@ -5,13 +5,22 @@ import com.spm.teacherhelperv2.entity.CourseHomeworkDO;
 import com.spm.teacherhelperv2.manager.RespondResult;
 import com.spm.teacherhelperv2.service.CourseHomeworkService;
 import io.swagger.annotations.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -221,5 +230,25 @@ public class CourseHomeworkController {
         }catch (Exception e){
         	return RespondResult.error("删除失败");
         }
-	}	
+	}
+
+
+
+	@GetMapping("/filesdownloads")
+	public ResponseEntity<byte[]> fileDownloads(@RequestParam("fileName")String filename,
+												@RequestParam("courseHomeworkId")String courseHomeworkId,
+												@RequestParam("courseId")String courseId) throws IOException {
+		String[] names=filename.split("-");
+		String doenLoadPath  = "F:\\IJ\\teacherhelperv2\\courses\\"+courseId+"\\"+courseHomeworkId+"\\"+names[0]+"\\"+names[1];
+		File file = new File(doenLoadPath);
+		if(file.exists()){
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			headers.setContentDispositionFormData("attachment", file.getName());
+			return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),headers, HttpStatus.OK);
+		}else{
+			System.out.println("文件不存在,请重试...");
+			return null;
+		}
+	}
 }

@@ -17,6 +17,7 @@ import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * description: ShiroConfig
@@ -46,7 +47,6 @@ public class ShiroConfig {
 
         map.put("/v1/dologin","anon");
         map.put("/**","authc");
-
 //        shiroFilterFactoryBean.setLoginUrl("/v1/unlogin");
 //        shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
         return shiroFilterFactoryBean;

@@ -161,6 +161,13 @@
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
 
+        <!--文件转字节流 FileUtils commons io包-->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.3.3</version>
+        </dependency>
+
 
         <dependency>
             <groupId>com.google.code.gson</groupId>

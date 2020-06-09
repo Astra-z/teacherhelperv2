@@ -2,6 +2,8 @@ package com.spm.teacherhelperv2.controller;
 
 import com.spm.teacherhelperv2.config.WebSocketServer;
 import com.spm.teacherhelperv2.entity.NoteDO;
+import com.spm.teacherhelperv2.entity.UserDO;
+import com.spm.teacherhelperv2.entity.UserNoteDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 /**
  * description: SocketController
@@ -25,10 +29,10 @@ public class SocketController {
     @GetMapping("/webSocketSend")
     @ResponseBody
     public void socket(@RequestParam("userId")String userId) throws InterruptedException {
-        NoteDO noteDO=new NoteDO();
-        for (int i = 0; i < 10; i++){
-            Thread.sleep(1000);
-            webSocket.sendObjMessage(userId, noteDO);
+        List<NoteDO> noteDOList= UserNoteDO.userNoteList.get(Integer.valueOf(userId));
+        if(noteDOList!=null) {
+            webSocket.sendObjMessage(userId, noteDOList);
+            UserNoteDO.userNoteList.remove(Integer.valueOf(userId));
         }
     }
 }
