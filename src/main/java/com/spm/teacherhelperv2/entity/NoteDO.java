@@ -90,7 +90,7 @@ public class NoteDO implements Serializable {
      */
     @ApiModelProperty(value = "")
     @TableField("CREATE_TIME")
-    @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss:SSS")
     private Date createTime;
     /**
      *  

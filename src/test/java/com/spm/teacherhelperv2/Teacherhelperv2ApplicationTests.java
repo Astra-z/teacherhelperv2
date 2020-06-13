@@ -2,6 +2,7 @@ package com.spm.teacherhelperv2;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.spm.teacherhelperv2.dao.MenuMapper;
+import com.spm.teacherhelperv2.dao.StudentMentorMapper;
 import com.spm.teacherhelperv2.entity.MenuDO;
 import com.spm.teacherhelperv2.service.MenuService;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,9 @@ class Teacherhelperv2ApplicationTests {
 
     @Autowired
     MenuMapper mapper;
+
+    @Autowired
+    StudentMentorMapper studentMentorMapper;
     @Test
     void contextLoads() {
         List<MenuDO> menuDOS=roleService.findPermsByUsername("zhangsan");
@@ -36,6 +40,11 @@ class Teacherhelperv2ApplicationTests {
     @Test
     void mybatispulsSelectcount(){
         System.out.println(mapper.selectCount(new QueryWrapper<>()));
+    }
+
+    @Test
+    void testMentor(){
+        System.out.println(studentMentorMapper.findAllMyStudent(1));
     }
 
 }
