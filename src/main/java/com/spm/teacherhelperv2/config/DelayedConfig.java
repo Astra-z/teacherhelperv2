@@ -18,15 +18,18 @@ import java.util.Map;
  */
 @Configuration
 public class DelayedConfig {
-    public final static String QUEUE_NAME = "delayed.live.queue";
-    public final static String EXCHANGE_NAME = "delayed.live.exchange";
+    protected final static String QUEUE_NAME = "delayed.live.queue";
+    protected final static String EXCHANGE_NAME = "delayed.live.exchange";
 
     @Bean
     public Queue queue() {
         return new Queue(DelayedConfig.QUEUE_NAME);
     }
 
-    // 配置默认的交换机
+    /**
+     *  配置默认的交换机
+     * @return CustomExchange
+     */
     @Bean
     CustomExchange customExchange() {
         Map<String, Object> args = new HashMap<>();
@@ -35,7 +38,12 @@ public class DelayedConfig {
         return new CustomExchange(DelayedConfig.EXCHANGE_NAME, "x-delayed-message", true, false, args);
     }
 
-    // 绑定队列到交换器
+    /**
+     * 绑定队列到交换器
+     * @param queue 队列
+     * @param exchange 交换机
+     * @return Binding
+     */
     @Bean
     Binding binding(Queue queue, CustomExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(DelayedConfig.QUEUE_NAME).noargs();

@@ -35,7 +35,6 @@ public class Tree<T> {
      * 节点属性
      */
     private Map<String, Object> attributes;
-
     /**
      * 节点属性
      */

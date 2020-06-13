@@ -1,4 +1,4 @@
-package com.spm.teacherhelperv2.manager;
+package com.spm.teacherhelperv2.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

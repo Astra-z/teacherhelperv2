@@ -33,7 +33,7 @@ public class NoteDO implements Serializable {
      */
     @ApiModelProperty(value = "")
     @TableId(value = "NOTE_ID", type = IdType.AUTO)
-    private Integer noteId;
+    private Long noteId;
     /**
      *  
      */
@@ -45,7 +45,7 @@ public class NoteDO implements Serializable {
      */
     @ApiModelProperty(value = "")
     @TableField("NOTE_TYPE")
-    private Boolean noteType;
+    private Integer noteType;
     /**
      *  
      */
@@ -67,7 +67,7 @@ public class NoteDO implements Serializable {
     @TableField("USER_ID")
     private Integer userId;
     /**
-     *  
+     *
      */
     @ApiModelProperty(value = "")
     @TableField("REMARK")
@@ -79,7 +79,13 @@ public class NoteDO implements Serializable {
     @TableField("FILEID")
     private String fileid;
     /**
-     *  
+     *
+     */
+    @ApiModelProperty(value = "")
+    @TableField("NOTE_SWITCH")
+    private Boolean noteSwitch;
+    /**
+     *
      */
     @ApiModelProperty(value = "")
     @TableField("CREATE_TIME")

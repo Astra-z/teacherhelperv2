@@ -134,11 +134,14 @@ public class NoteServiceImpl implements NoteService {
 	@Override
 	@Async
 	public NoteDO updateNoteField(String data, Long noteId) {
-		Field[] fields = new NoteDO().getClass().getDeclaredFields();
+		Field[] fields = NoteDO.class.getDeclaredFields();
 		NoteDO noteDO = (NoteDO) getEntity.setTableField(
 				data, NoteDO.class, fields, this.noteMapper.selectById(noteId));
 		noteDO.setModifyTime(new Date());
 		this.noteMapper.updateById(noteDO);
+		if(noteDO.getNoteSwitch()){
+			delayedSender.send(noteDO,noteDO.getEndTime().getTime()-noteDO.getModifyTime().getTime());
+		}
 		logger.info("receive:[data:"+data+"--noteId:"+noteId+"];Intermediate variable:[--noteDO:"+noteDO+"];--return:"+noteDO);
 		return noteDO;	
 	}	

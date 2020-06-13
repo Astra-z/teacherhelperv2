@@ -3,15 +3,13 @@ package com.spm.teacherhelperv2.manager;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spm.teacherhelperv2.util.ObjectConvertUtils;
 
 public class GetEntity {
-	private static final ObjectMapper objectMapper=new ObjectMapper();
 
 	public String getAnnotationValue(Field[] fields, String fieldName) {
 		String annotationValue = null;
@@ -26,31 +24,29 @@ public class GetEntity {
 
 	public Object setTableField(String data, Class<?> clazz, Field[] fields, Object obj) {	
 		JSONObject fieldJson = JSONObject.parseObject(data);
-//		System.out.println("要修改的属性："+fieldJson);
+//		("要修改的属性："+fieldJson);
 		Set<String> keyList = fieldJson.keySet();
-		Iterator<String> it = keyList.iterator();
-		while (it.hasNext()) {
-			String fieldName = it.next();
-//			System.out.println("修改的字段名："+fieldName);
+		for (String fieldName : keyList) {
+			//"修改的字段名："+fieldName);
 			char[] cs = fieldName.toCharArray();
 			cs[0] -= 32;
 			String fieldMethodName = String.valueOf(cs);
 			String methodName = "set" + fieldMethodName;
-//			System.out.println("修改调用的方法名："+methodName);
+//			("修改调用的方法名："+methodName);
 			Class<?> typeClass = null;
-			for (int i = 0; i < fields.length; i++) {
-				if(fieldName.equals(fields[i].getName())) {					
-					typeClass = (Class<?>) fields[i].getGenericType();
+			for (Field field : fields) {
+				if (fieldName.equals(field.getName())) {
+					typeClass = (Class<?>) field.getGenericType();
 				}
-			}			
+			}
 			try {
-				Method method = clazz.getDeclaredMethod(methodName, new Class[] { typeClass });
-				method.invoke(obj, new Object[] { objectMapper.convertValue(fieldJson.get(fieldName),typeClass)});
+				Method method = clazz.getDeclaredMethod(methodName, typeClass);
+				method.invoke(obj, ObjectConvertUtils.convertValue(fieldJson.get(fieldName), typeClass));
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
-//		System.out.println("修改完成后："+obj);
+//		("修改完成后："+obj);
 		return obj;
 	}
 

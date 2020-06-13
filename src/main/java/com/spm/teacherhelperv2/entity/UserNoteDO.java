@@ -1,8 +1,6 @@
 package com.spm.teacherhelperv2.entity;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -14,6 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserNoteDO {
     private UserNoteDO(){}
 
-    public static final Map<Integer, List<NoteDO>>userNoteList=new ConcurrentHashMap<>(64);
-
+    public static final Map<Integer, List<NoteDO>> userNoteList=new ConcurrentHashMap<>(64);
+    public static final Set<Integer> cancelNoteSet=new HashSet<>();
 }

@@ -194,7 +194,7 @@ public class NoteController {
 		@ApiResponse(code = 553, message = "权限不够"), @ApiResponse(code = 554, message = "请求数据有误"),
 		@ApiResponse(code = 555, message = "请求超时，请重试") })
 	public RespondResult updateNoteForField(@ApiParam(value = "noteId", required = true)@PathVariable("noteId")String noteId,
-                                            @RequestParam(value = "data",required=false) String data) {
+                                            @RequestBody String data) {
 		logger.info("receive:[noteId:"+noteId+"-:deleteata:"+data+"]");
 		try {
 			NoteDO noteDO = noteService.updateNoteField(data, Long.valueOf(noteId));

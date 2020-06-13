@@ -10,28 +10,22 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+
+
 /**
- * description: CORSConfig
- * date: 2020/5/16 10:21
- * author: Zhangjr
- * version: 1.0
+ * Demo class
+ *
+ *
+ * @author zhangsan
+ * @since 2020年6月9日 18:05:26
  */
 @Configuration
-public class CORSConfig implements WebMvcConfigurer {
+public class CorsConfig implements WebMvcConfigurer {
 
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**")
-//                .allowedOrigins("*")
-//                .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
-//                .allowCredentials(true)
-//                .maxAge(3600)
-//                .allowedHeaders("*");
-//    }
 
     /**
      * 跨域请求配置
-     * @return
+     * @return CorsConfiguration
      */
     private CorsConfiguration corsConfig() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
