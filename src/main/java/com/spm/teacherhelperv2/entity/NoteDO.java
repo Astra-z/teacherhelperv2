@@ -123,8 +123,12 @@ public class NoteDO implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         NoteDO noteDO = (NoteDO) o;
         return Objects.equals(modifyTime, noteDO.modifyTime)&&
                 Objects.equals(noteId, noteDO.noteId) &&

@@ -17,7 +17,7 @@ public class ObjectConvertUtils {
     private final static ObjectMapper objectMapper=new ObjectMapper();
     private final static SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public static <T> T convertValue(Object value,Class<T> clazz) throws ParseException {
+    public static <T> T convertValue(Object value,Class<T> clazz) throws Exception {
         if(clazz== Date.class&&value!=null&&value.toString().length()<=19){
             return (T) simpleDateFormat.parse(value.toString());
         }
