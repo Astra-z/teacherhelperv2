@@ -13,6 +13,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * NoteDO实体类
@@ -96,7 +97,7 @@ public class NoteDO implements Serializable {
      */
     @ApiModelProperty(value = "")
     @TableField("MODIFY_TIME")
-    @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss:SSS")
     private Date modifyTime;
 
     
@@ -118,5 +119,28 @@ public class NoteDO implements Serializable {
          +", createTime=" + createTime 
          +", modifyTime=" + modifyTime 
         +"}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NoteDO noteDO = (NoteDO) o;
+        return Objects.equals(modifyTime, noteDO.modifyTime)&&
+                Objects.equals(noteId, noteDO.noteId) &&
+                Objects.equals(noteName, noteDO.noteName) &&
+                Objects.equals(noteType, noteDO.noteType) &&
+                Objects.equals(startTime, noteDO.startTime) &&
+                Objects.equals(endTime, noteDO.endTime) &&
+                Objects.equals(userId, noteDO.userId) &&
+                Objects.equals(remark, noteDO.remark) &&
+                Objects.equals(fileid, noteDO.fileid) &&
+                Objects.equals(noteSwitch, noteDO.noteSwitch) &&
+                Objects.equals(createTime, noteDO.createTime) ;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(noteId, noteName, noteType, startTime, endTime, userId, remark, fileid, noteSwitch, createTime, modifyTime);
     }
 }

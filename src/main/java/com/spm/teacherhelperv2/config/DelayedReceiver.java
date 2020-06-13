@@ -54,7 +54,7 @@ public class DelayedReceiver {
         list.add(noteDO);
         //接受到消息以后先判断是否该任务已被取消
         NoteDO newNote=noteMapper.selectById(noteDO.getNoteId());
-        if(newNote.getNoteSwitch()){
+        if(newNote!=null&&newNote.getNoteSwitch()&&noteDO.equals(newNote)){
             if(newNote.getNoteType()==2){
                 newNote.setNoteSwitch(false);
                 noteMapper.updateById(newNote);
