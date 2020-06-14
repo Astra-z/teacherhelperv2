@@ -33,11 +33,25 @@ public class UserRoleServiceImpl implements UserRoleService {
 	private UserRoleMapper userRoleMapper;
 	private GetEntity getEntity = new GetEntity();
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
-    /**
-     * 实现listUserRoleByOther()方法
-     * 用于根据特定条件值查询所有 UserRoleDO数据
-     */
+
+
+
+
+	/**
+	**/
+	public List<UserRoleDO> listUserRoleByRoleId(String roleID) {
+		Integer id = Integer.valueOf(roleID);
+		QueryWrapper<UserRoleDO> queryWrapper = new QueryWrapper<>();
+		queryWrapper.lambda().eq(UserRoleDO::getRoleId,roleID);
+		return this.userRoleMapper.selectList(queryWrapper);
+
+	}
+
+
+		/**
+         * 实现listUserRoleByOther()方法
+         * 用于根据特定条件值查询所有 UserRoleDO数据
+         */
 	@Override
 	public List<UserRoleDO> listUserRoleByOther(String fieldValue, String fieldName, String page, String limit) {
 	    List<UserRoleDO> userRoleDOs = new ArrayList<UserRoleDO>();

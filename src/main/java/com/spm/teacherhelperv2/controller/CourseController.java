@@ -220,9 +220,11 @@ public class CourseController {
 		@ApiResponse(code = 555, message = "请求超时，请重试") })
 	public RespondResult deleteCourseDOById(@ApiParam(value = "courseIdListString", required = true)@PathVariable("courseId")String courseId) {
 		Boolean flag = null;
+		Boolean flag2=null;
 		logger.info("receive:[courseId:"+courseId+"]");
         try {
 			flag = courseService.deleteCourseById(courseId);
+
         	return RespondResult.success("删除成功",flag);
         }catch (Exception e){
         	return RespondResult.error("删除失败");

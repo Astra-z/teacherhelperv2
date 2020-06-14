@@ -219,7 +219,10 @@ public class RoleController {
 		logger.info("receive:[roleId:"+roleId+"]");
         try {
 			flag = roleService.deleteRoleById(roleId);
-        	return RespondResult.success("删除成功",flag);
+			if(flag){
+				return RespondResult.success("删除成功",flag);
+			}
+			else return RespondResult.error("删除失败");
         }catch (Exception e){
         	return RespondResult.error("删除失败");
         }

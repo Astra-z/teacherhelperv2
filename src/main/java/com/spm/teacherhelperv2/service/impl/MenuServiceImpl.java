@@ -4,13 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.spm.teacherhelperv2.dao.MenuMapper;
 import com.spm.teacherhelperv2.entity.MenuDO;
+import com.spm.teacherhelperv2.entity.RoleMenuDO;
 import com.spm.teacherhelperv2.entity.Tree;
 import com.spm.teacherhelperv2.manager.GetEntity;
 import com.spm.teacherhelperv2.service.MenuService;
+import com.spm.teacherhelperv2.service.RoleMenuService;
 import com.spm.teacherhelperv2.util.TreeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -36,7 +39,11 @@ public class MenuServiceImpl implements MenuService {
 	private MenuMapper menuMapper;
 	private GetEntity getEntity = new GetEntity();
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
+
+	@Autowired(required = false)
+	@Qualifier("RoleMenuService")
+	private RoleMenuServiceImpl roleMenuService;
+
     /**
      * 实现listMenuByOther()方法
      * 用于根据特定条件值查询所有 MenuDO数据
@@ -154,6 +161,13 @@ public class MenuServiceImpl implements MenuService {
 	public Boolean deleteMenuById(String menuId) {
 		Boolean flag = false;
 		Long Id=Long.valueOf(menuId);
+
+		List<RoleMenuDO> roleMenuList=roleMenuService.listUserRoleByRoleId(menuId);
+
+		if(roleMenuList.size()!=0){
+			return false;
+		}
+
         int singleDelete = this.menuMapper.deleteById(Id);
         if(singleDelete == 1){
            flag = true; 

@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("${global.version}")
-public class SocketController {
+public class    SocketController {
     @Autowired
     private WebSocketServer webSocket;
 
