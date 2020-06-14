@@ -150,21 +150,24 @@ public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper,RoleMenuDO> 
 		this.roleMenuMapper.updateById(roleMenuDO);
 		logger.info("receive:[data:"+data+"--roleMenuId:"+roleMenuId+"];Intermediate variable:[--roleMenuDO:"+roleMenuDO+"];--return:"+roleMenuDO);
 		return roleMenuDO;	
-	}	
+	}
+
+
+
 	/**
 	 *  实现deleteRoleMenuById()方法
 	 *  用于删除对应Id的数据 
 	 */
 	@Override
-	@Async
-	public Boolean deleteRoleMenuById(String roleMenuId) {
+	public Boolean deleteRoleMenuByMap(String fieldName, String fieldValue)  {
 		Boolean flag = false;
-		Integer id= Integer.valueOf(roleMenuId);
-        int singleDelete = this.roleMenuMapper.deleteById(id);
+		Long id= Long.valueOf(fieldValue);
+		HashMap<String,Object> columnMap=new HashMap<>();
+		columnMap.put(fieldName,fieldValue);
+        int singleDelete = this.roleMenuMapper.deleteByMap(columnMap);
         if(singleDelete == 1){
            flag = true; 
         }     	    
-        logger.info("receive:[roleMenuId:"+roleMenuId+"];Intermediate variable:[--singleDelete:"+singleDelete+"];--return:"+flag);
-		return flag;	
+		return flag;
 	}
 }

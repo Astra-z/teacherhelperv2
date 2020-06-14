@@ -161,14 +161,8 @@ public class MenuServiceImpl implements MenuService {
 	public Boolean deleteMenuById(String menuId) {
 		Boolean flag = false;
 		Long Id=Long.valueOf(menuId);
-
-		List<RoleMenuDO> roleMenuList=roleMenuService.listUserRoleByRoleId(menuId);
-
-		if(roleMenuList.size()!=0){
-			return false;
-		}
-
         int singleDelete = this.menuMapper.deleteById(Id);
+		this.roleMenuService.deleteRoleMenuByMap("MENU_ID",menuId);
         if(singleDelete == 1){
            flag = true; 
         }     	    

@@ -15,9 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * UserRoleServiceImpl服务实现类
@@ -153,14 +151,14 @@ public class UserRoleServiceImpl implements UserRoleService {
 	 *  用于删除对应Id的数据 
 	 */
 	@Override
-	@Async
-	public Boolean deleteUserRoleById(String userRoleId) {
+	public Boolean deleteUserRoleByMap(String fieldName,String fieldValue) {
 		Boolean flag = false;
-        int singleDelete = this.userRoleMapper.deleteById(userRoleId);	
+		Map<String, Object> columnMap = new HashMap<>();
+		columnMap.put(fieldName,fieldValue);
+        int singleDelete = this.userRoleMapper.deleteByMap(columnMap);
         if(singleDelete == 1){
            flag = true; 
         }     	    
-        logger.info("receive:[userRoleId:"+userRoleId+"];Intermediate variable:[--singleDelete:"+singleDelete+"];--return:"+flag);
-		return flag;	
+		return flag;
 	}
 }

@@ -65,5 +65,5 @@ public interface RoleMenuService  {
 	 * @param roleMenuId roleMenuId
      * @return String
 	 */
-	public Boolean deleteRoleMenuById(String roleMenuId);	
+	public Boolean deleteRoleMenuByMap(String fieldName,String fieldValue);
 }

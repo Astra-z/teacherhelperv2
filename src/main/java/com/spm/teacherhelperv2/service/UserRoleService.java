@@ -64,5 +64,5 @@ public interface UserRoleService {
 	 * @param userRoleId userRoleId
      * @return String
 	 */
-	public Boolean deleteUserRoleById(String userRoleId);	
+	public Boolean deleteUserRoleByMap(String fieldValue,String fieldName);
 }

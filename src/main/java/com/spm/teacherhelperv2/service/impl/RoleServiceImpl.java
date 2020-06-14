@@ -225,15 +225,12 @@ public class RoleServiceImpl implements RoleService {
 	@Override
 	@Async
 	public Boolean deleteRoleById(String roleId) {
+		//需要用事务操作（待完成）
 		Boolean flag = false;
-		int Id = Integer.valueOf(roleId);
-
-		List<UserRoleDO> listUserRole= userRoleService.listUserRoleByRoleId(roleId);
-		if(listUserRole!=null) { //该角色ID还有人在用
-			return false;
-		}
+		Long Id = Long.valueOf(roleId);
 		int singleDelete = this.roleMapper.deleteById(Id);
-        this.roleMenuService.deleteRoleMenuById(roleId);
+		this.userRoleService.deleteUserRoleByMap("ROLE_ID",roleId);
+        this.roleMenuService.deleteRoleMenuByMap("ROLE_ID",roleId);
 
         if(singleDelete == 1){
            flag = true; 

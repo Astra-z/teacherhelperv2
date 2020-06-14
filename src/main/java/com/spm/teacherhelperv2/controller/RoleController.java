@@ -222,7 +222,9 @@ public class RoleController {
 			if(flag){
 				return RespondResult.success("删除成功",flag);
 			}
-			else return RespondResult.error("删除失败");
+			else {
+				return RespondResult.error("删除失败");
+			}
         }catch (Exception e){
         	return RespondResult.error("删除失败");
         }

@@ -30,7 +30,7 @@ public class UserRoleDO implements Serializable {
      *  用户ID
      */
     @ApiModelProperty(value = "用户ID")
-    @TableId(value = "USER_ID", type = IdType.AUTO)
+    @TableField(value = "USER_ID")
     private Long userId;
     /**
      *  角色ID
