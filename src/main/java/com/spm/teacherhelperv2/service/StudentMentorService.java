@@ -2,6 +2,7 @@ package com.spm.teacherhelperv2.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.spm.teacherhelperv2.entity.StudentMentorDO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -70,4 +71,8 @@ public interface StudentMentorService {
 	public List<StudentMentorDO> findAllMyStudent(Integer userId);
 
 	public void sendNote(JSONArray NoteList);
+
+	public List<String> getMyFileList(String mentorId,String studentId);
+
+    public Boolean uploadfile(MultipartFile file,String mentorId,String studentId);
 }

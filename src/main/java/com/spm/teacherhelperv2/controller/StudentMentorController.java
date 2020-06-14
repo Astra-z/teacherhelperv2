@@ -6,14 +6,23 @@ import com.google.gson.JsonArray;
 import com.spm.teacherhelperv2.entity.StudentMentorDO;
 import com.spm.teacherhelperv2.manager.RespondResult;
 import com.spm.teacherhelperv2.service.StudentMentorService;
+import com.spm.teacherhelperv2.util.MyFileUtils;
 import io.swagger.annotations.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -231,6 +240,50 @@ public class StudentMentorController {
 			return RespondResult.success("发送提醒成功",null);
 		}catch (Exception e){
 			return RespondResult.error("发送提醒失败");
+		}
+	}
+
+	@PostMapping("/uploadfile")
+	@ResponseBody
+	public RespondResult uploadCourseHomework(@RequestParam("file") MultipartFile file,
+											  @RequestParam("mentorId") String mentorId,
+											  @RequestParam("studentId") String studentId){
+		Boolean flag;
+		flag=this.studentMentorService.uploadfile(file,mentorId,studentId);
+		if(flag){
+			return RespondResult.success("上传成功",null);
+		}
+		else {
+			return RespondResult.error("上传失败");
+		}
+	}
+
+	@GetMapping("/studenfilelist")
+	@ResponseBody
+	public RespondResult getFileList(@RequestParam("mentorId")String mentorId,
+										 @RequestParam(value = "studentId",required = false)String studentId){
+		try {
+			return RespondResult.success("查询成功",this.studentMentorService.getMyFileList(mentorId,studentId));
+		}
+		catch(Exception e) {
+			return RespondResult.error("查询失败");
+		}
+	}
+
+	@GetMapping("/filesdownloads")
+	public ResponseEntity<byte[]> fileDownloads(@RequestParam("fileName")String filename,
+												@RequestParam("mentorId") String mentorId,
+												@RequestParam("studentId") String studentId) throws IOException {
+		String doenLoadPath  = MyFileUtils.STUDENT_FILE_PATH +mentorId+"\\"+studentId+"\\"+filename;
+		File file = new File(doenLoadPath);
+		if(file.exists()){
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			headers.setContentDispositionFormData("attachment", file.getName());
+			return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),headers, HttpStatus.OK);
+		}else{
+			System.out.println("文件不存在,请重试...");
+			return null;
 		}
 	}
 }

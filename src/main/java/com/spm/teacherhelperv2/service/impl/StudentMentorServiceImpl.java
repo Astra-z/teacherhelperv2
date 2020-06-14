@@ -12,13 +12,17 @@ import com.spm.teacherhelperv2.entity.StudentMentorDO;
 import com.spm.teacherhelperv2.entity.UserNoteDO;
 import com.spm.teacherhelperv2.manager.GetEntity;
 import com.spm.teacherhelperv2.service.StudentMentorService;
+import com.spm.teacherhelperv2.util.MyFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -178,4 +182,49 @@ public class StudentMentorServiceImpl implements StudentMentorService {
             }
         }
     }
+
+	@Override
+	public List<String> getMyFileList(String mentorId, String studentId) {
+		if(studentId!=null){
+			String filePath = MyFileUtils.STUDENT_FILE_PATH+mentorId+"\\"+studentId+"\\";
+			File myfile=new File(filePath);
+			if(!myfile.exists()){
+				myfile.mkdirs();
+			}
+			List<String> courseHomeworkList= MyFileUtils.findAllMyFileNames(myfile);
+			return courseHomeworkList;
+		}
+		else {
+			String filePath = MyFileUtils.STUDENT_FILE_PATH+mentorId+"\\";
+			File studentfile=new File(filePath);
+			if(!studentfile.exists()){
+				studentfile.mkdirs();
+			}
+			List<String> studentfileList=new ArrayList<>();
+			studentfileList=MyFileUtils.findAllFileNames(studentfile,"",studentfileList);
+			return studentfileList;
+		}
+	}
+
+	@Override
+	public Boolean uploadfile(MultipartFile file, String mentorId, String studentId) {
+		if (file.isEmpty()) {
+			return false;
+		}
+		String fileName = file.getOriginalFilename();
+		String filePath = "F:\\IJ\\teacherhelperv2\\studentfiles\\"+mentorId+"\\"+studentId+"\\";
+		File dest = new File(filePath + fileName);
+		File parentDir= dest.getParentFile();
+		try {
+			if(!parentDir.exists()){
+				parentDir.mkdirs();
+			}
+			file.transferTo(dest);
+			logger.info("上传成功");
+			return true;
+		} catch (IOException e) {
+			logger.error(e.toString(), e);
+		}
+		return false;
+	}
 }

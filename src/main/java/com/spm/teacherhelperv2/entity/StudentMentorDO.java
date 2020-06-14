@@ -31,7 +31,7 @@ public class StudentMentorDO implements Serializable {
      *  
      */
     @ApiModelProperty(value = "")
-    @TableId(value = "STUDENT_ID")
+    @TableField(value = "STUDENT_ID")
     private Integer studentId;
     /**
      *  

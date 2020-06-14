@@ -235,7 +235,7 @@ public class CourseController {
 											  @RequestParam("username") String username,
 											  @RequestParam("courseId") String courseId,
 											  @RequestParam("courseHomeworkId")String courseHomeworkId){
-		Boolean flag=null;
+		Boolean flag;
 		flag=this.courseService.uploadCourseHomework(file,courseId,courseHomeworkId,username);
 		if(flag){
 			return RespondResult.success("上传成功",null);
