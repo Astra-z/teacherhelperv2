@@ -1,5 +1,6 @@
 package com.spm.teacherhelperv2.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.spm.teacherhelperv2.dao.CourseFrequencyMapper;
@@ -190,7 +191,11 @@ public class CourseServiceImpl implements CourseService {
 	@Async
 	public Boolean deleteCourseById(String courseId) {
 		Boolean flag = false;
-        int singleDelete = this.courseMapper.deleteById(courseId);	
+		Integer Id=Integer.valueOf(courseId);
+		int singleDelete = this.courseMapper.deleteById(Id);
+		QueryWrapper<CourseFrequencyDO> queryWrapper = new QueryWrapper<>();
+		queryWrapper.lambda().eq(CourseFrequencyDO::getCourseid,Id);
+		int frequencyDelete=this.courseFrequencyMapper.delete(queryWrapper);
         if(singleDelete == 1){
            flag = true; 
         }     	    

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.spm.teacherhelperv2.dao.RoleMenuMapper;
 import com.spm.teacherhelperv2.entity.RoleMenuDO;
+import com.spm.teacherhelperv2.entity.UserRoleDO;
 import com.spm.teacherhelperv2.manager.GetEntity;
 import com.spm.teacherhelperv2.service.RoleMenuService;
 import org.slf4j.Logger;
@@ -75,7 +76,15 @@ public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper,RoleMenuDO> 
 		logger.info("receive:[roleMenuId:"+roleMenuId+"];--return:"+roleMenuDO);
 		return roleMenuDO;
 	}
-	
+	/**
+	 **/
+	public List<RoleMenuDO> listUserRoleByRoleId(String menuId) {
+		Integer id = Integer.valueOf(menuId);
+		QueryWrapper<RoleMenuDO> queryWrapper = new QueryWrapper<>();
+		queryWrapper.lambda().eq(RoleMenuDO::getMenuId,id);
+		return this.roleMenuMapper.selectList(queryWrapper);
+
+	}
     /**
      * 实现getRoleMenuByOther方法
      * 用于根据其他信息查询对应单条数据 
@@ -150,7 +159,8 @@ public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper,RoleMenuDO> 
 	@Async
 	public Boolean deleteRoleMenuById(String roleMenuId) {
 		Boolean flag = false;
-        int singleDelete = this.roleMenuMapper.deleteById(roleMenuId);	
+		Integer id= Integer.valueOf(roleMenuId);
+        int singleDelete = this.roleMenuMapper.deleteById(id);
         if(singleDelete == 1){
            flag = true; 
         }     	    

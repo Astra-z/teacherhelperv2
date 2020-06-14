@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService {
 	@Async
 	public Boolean deleteUserById(String userId) {
 		Boolean flag = false;
-        int singleDelete = this.userMapper.deleteById(userId);	
+        int singleDelete = this.userMapper.deleteById(Integer.valueOf(userId));
         if(singleDelete == 1){
            flag = true; 
         }     	    

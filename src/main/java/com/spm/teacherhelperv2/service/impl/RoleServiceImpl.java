@@ -7,11 +7,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spm.teacherhelperv2.dao.RoleMapper;
 import com.spm.teacherhelperv2.dao.RoleMenuMapper;
+import com.spm.teacherhelperv2.entity.CourseFrequencyDO;
 import com.spm.teacherhelperv2.entity.RoleDO;
 import com.spm.teacherhelperv2.entity.RoleMenuDO;
+import com.spm.teacherhelperv2.entity.UserRoleDO;
 import com.spm.teacherhelperv2.manager.GetEntity;
 import com.spm.teacherhelperv2.service.RoleMenuService;
 import com.spm.teacherhelperv2.service.RoleService;
+import com.spm.teacherhelperv2.service.UserRoleService;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +44,10 @@ public class RoleServiceImpl implements RoleService {
 	private static final ObjectMapper objectMapper=new ObjectMapper();
 	@Autowired(required = false)
 	private RoleMapper roleMapper;
+
+	@Autowired(required = false)
+	@Qualifier("UserRoleService")
+	private UserRoleServiceImpl userRoleService;
 
 	@Autowired
 	@Qualifier("RoleMenuService")
@@ -219,8 +226,15 @@ public class RoleServiceImpl implements RoleService {
 	@Async
 	public Boolean deleteRoleById(String roleId) {
 		Boolean flag = false;
-        int singleDelete = this.roleMapper.deleteById(roleId);
+		int Id = Integer.valueOf(roleId);
+
+		List<UserRoleDO> listUserRole= userRoleService.listUserRoleByRoleId(roleId);
+		if(listUserRole!=null) { //该角色ID还有人在用
+			return false;
+		}
+		int singleDelete = this.roleMapper.deleteById(Id);
         this.roleMenuService.deleteRoleMenuById(roleId);
+
         if(singleDelete == 1){
            flag = true; 
         }     	    
