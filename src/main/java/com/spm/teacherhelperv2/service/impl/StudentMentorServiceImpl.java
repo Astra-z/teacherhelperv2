@@ -158,7 +158,7 @@ public class StudentMentorServiceImpl implements StudentMentorService {
 	@Async
 	public Boolean deleteStudentMentorById(String studentMentorId) {
 		Boolean flag = false;
-        int singleDelete = this.studentMentorMapper.deleteById(studentMentorId);	
+        int singleDelete = this.studentMentorMapper.deleteById(Integer.valueOf(studentMentorId));
         if(singleDelete == 1){
            flag = true; 
         }     	    

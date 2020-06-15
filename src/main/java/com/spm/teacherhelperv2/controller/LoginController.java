@@ -63,6 +63,7 @@ public class LoginController {
         }
         UserDO userDO=userService.getUserByOther(user.getUsername(),"username");
         map.put("user",userDO);
+        String sessionid= (String) subject.getSession().getId();
         map.put("Authorization",subject.getSession().getId());
         return RespondResult.success("登录成功",map);
     }

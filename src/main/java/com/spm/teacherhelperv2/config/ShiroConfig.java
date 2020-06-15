@@ -68,6 +68,7 @@ public class ShiroConfig {
                                                         @Qualifier("sessionManager")SessionManager sessionManager){
         DefaultWebSecurityManager securityManager=new DefaultWebSecurityManager();
         securityManager.setRealm(realm);
+
         securityManager.setSessionManager(sessionManager);
         return securityManager;
 

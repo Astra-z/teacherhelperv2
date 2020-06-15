@@ -32,6 +32,7 @@ public class NoteController {
 	/**
 	 * 获取满足某些条件的全部数据列表 
 	 * @param fieldValue 查询条件值
+	 * @param fieldValue 查询条件值
 	 * @param fieldName 查询条件值属性名
 	 * @param page 页数
 	 * @param limit 每页限制条数

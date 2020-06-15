@@ -58,7 +58,7 @@ public interface CourseService {
 	 * @param courseId courseId
      * @return String
 	 */
-	public CourseDO updateCourseField(String data, Long courseId);
+	public CourseDO updateCourseField(String data, Integer courseId);
 	
 	/**
 	 * 根据Id删除数据

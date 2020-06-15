@@ -153,7 +153,7 @@ public class NoteServiceImpl implements NoteService {
 	@Async
 	public Boolean deleteNoteById(String noteId) {
 		Boolean flag = false;
-        int singleDelete = this.noteMapper.deleteById(noteId);	
+        int singleDelete = this.noteMapper.deleteById(Long.valueOf(noteId));
         if(singleDelete == 1){
            flag = true; 
         }     	    

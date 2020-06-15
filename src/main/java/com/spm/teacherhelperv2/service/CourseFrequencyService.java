@@ -64,5 +64,7 @@ public interface CourseFrequencyService {
 	 * @param courseFrequencyId courseFrequencyId
      * @return String
 	 */
-	public Boolean deleteCourseFrequencyById(String courseFrequencyId);	
+	public Boolean deleteCourseFrequencyById(String courseFrequencyId);
+
+	public CourseFrequencyDO updateCourseTime(String data);
 }

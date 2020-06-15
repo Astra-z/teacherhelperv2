@@ -1,6 +1,7 @@
 package com.spm.teacherhelperv2.config;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.session.mgt.SessionKey;
 import org.apache.shiro.web.servlet.ShiroHttpServletRequest;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.apache.shiro.web.util.WebUtils;
@@ -9,6 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * description: MySessionManager
@@ -22,6 +24,7 @@ public class MySessionManager extends DefaultWebSessionManager {
 
     private static final String REFERENCED_SESSION_ID_SOURCE = "Stateless request";
 
+
     @Override
     protected Serializable getSessionId(ServletRequest request, ServletResponse response) {
         HttpServletRequest httpServletRequest = WebUtils.toHttp(request);
@@ -34,7 +37,8 @@ public class MySessionManager extends DefaultWebSessionManager {
             return sessionId;
         }else {
             //否则按默认规则从cookie取sessionId
-            return super.getSessionId(request, response);
+            return "zdy"+ UUID.randomUUID().toString();
         }
+
     }
 }

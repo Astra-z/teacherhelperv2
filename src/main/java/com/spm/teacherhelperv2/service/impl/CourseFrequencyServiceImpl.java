@@ -1,5 +1,6 @@
 package com.spm.teacherhelperv2.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.spm.teacherhelperv2.dao.CourseFrequencyMapper;
@@ -151,4 +152,11 @@ public class CourseFrequencyServiceImpl implements CourseFrequencyService {
         logger.info("receive:[courseFrequencyId:"+courseFrequencyId+"];Intermediate variable:[--singleDelete:"+singleDelete+"];--return:"+flag);
 		return flag;	
 	}
+
+    @Override
+    public CourseFrequencyDO updateCourseTime(String data) {
+        CourseFrequencyDO courseTime= JSONObject.parseObject(data,CourseFrequencyDO.class);
+        this.updateCourseFrequency(courseTime);
+        return courseTime;
+    }
 }

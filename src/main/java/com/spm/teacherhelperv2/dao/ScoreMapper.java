@@ -1,8 +1,10 @@
 package com.spm.teacherhelperv2.dao;
 
+import com.baomidou.mybatisplus.core.injector.methods.SelectById;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.spm.teacherhelperv2.entity.ScoreDO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * ScoreDOMapper 接口

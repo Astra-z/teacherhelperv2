@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -84,6 +85,14 @@ public class ScoreDO implements Serializable {
     @TableField("MODIFY_TIME")
     @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
     private Date modifyTime;
+
+    /**
+     *
+     *
+     */
+    @Transient
+    @TableField(exist = false)
+    private String courseName;
 
     
     protected Serializable pkVal() {

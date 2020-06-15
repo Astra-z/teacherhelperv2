@@ -73,7 +73,10 @@ public class ScoreServiceImpl implements ScoreService {
 			}
 		}
         logger.info("receive:[fieldValue:"+fieldValue+"--fieldName:"+fieldName+"--page:"+page+"--limit:"+limit+"];Intermediate variable:[--annotationValue:"+annotationValue+"];--return:"+scoreDOs);
-        return scoreDOs;
+        scoreDOs.forEach(scoreDO -> {
+        	scoreDO.setCourseName(this.courseMapper.selectById(scoreDO.getCourseId()).getCourseName());
+		});
+		return scoreDOs;
 	}
 	
 	    /**

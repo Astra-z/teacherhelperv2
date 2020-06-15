@@ -9,6 +9,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.spm.teacherhelperv2.util.ObjectConvertUtils;
 
+import javax.persistence.Transient;
+
 public class GetEntity {
 
 	public String getAnnotationValue(Field[] fields, String fieldName) {
@@ -35,9 +37,12 @@ public class GetEntity {
 //			("修改调用的方法名："+methodName);
 			Class<?> typeClass = null;
 			for (Field field : fields) {
-				if (fieldName.equals(field.getName())) {
+				if (fieldName.equals(field.getName())&&field.getAnnotation(Transient.class)==null) {
 					typeClass = (Class<?>) field.getGenericType();
 				}
+			}
+			if (typeClass==null){
+				continue;
 			}
 			try {
 				Method method = clazz.getDeclaredMethod(methodName, typeClass);

@@ -199,7 +199,7 @@ public class CourseController {
                                               @RequestBody String data) {
 		logger.info("receive:[courseId:"+courseId+"-:deleteata:"+data+"]");
 		try {
-			CourseDO courseDO = courseService.updateCourseField(data, Long.valueOf(courseId));
+			CourseDO courseDO = courseService.updateCourseField(data, Integer.valueOf(courseId));
 			return RespondResult.success("更新部分数据成功",courseDO);
 		}catch (Exception e){
 		return RespondResult.error("更新部分数据失败");

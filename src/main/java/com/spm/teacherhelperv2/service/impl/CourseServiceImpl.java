@@ -1,5 +1,7 @@
 package com.spm.teacherhelperv2.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -174,12 +176,20 @@ public class CourseServiceImpl implements CourseService {
 	 */
 	@Override
 	@Async
-	public CourseDO updateCourseField(String data, Long courseId) {
+	public CourseDO updateCourseField(String data, Integer courseId) {
 		Field[] fields = new CourseDO().getClass().getDeclaredFields();
 		CourseDO courseDO = (CourseDO) getEntity.setTableField(
 				data, CourseDO.class, fields, this.courseMapper.selectById(courseId));
 		courseDO.setModifyTime(new Date());
 		this.courseMapper.updateById(courseDO);
+		JSONObject courseData = JSONObject.parseObject(data);
+		if(courseData.containsKey("courseTimeList")){
+			JSONArray courseTimeList= (JSONArray) courseData.get("courseTimeList");
+			courseTimeList.forEach( courseTime->{
+				this.courseFrequencyService.updateCourseTime(JSONObject.toJSONString(courseTime));
+			});
+		}
+
 		logger.info("receive:[data:"+data+"--courseId:"+courseId+"];Intermediate variable:[--courseDO:"+courseDO+"];--return:"+courseDO);
 		return courseDO;	
 	}	
