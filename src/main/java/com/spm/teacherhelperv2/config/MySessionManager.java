@@ -25,6 +25,14 @@ public class MySessionManager extends DefaultWebSessionManager {
     private static final String REFERENCED_SESSION_ID_SOURCE = "Stateless request";
 
 
+
+    /**
+     * 自定义session管理
+     * <br/>
+     * 传统结构项目中，shiro从cookie中读取sessionId以此来维持会话，在前后端分离的项目中（也可在移动APP项目使用），
+     * 我们选择在ajax的请求头中传递sessionId，因此需要重写shiro获取sessionId的方式。
+     * 自定义MySessionManager类继承DefaultWebSessionManager类，重写getSessionId方法
+     **/
     @Override
     protected Serializable getSessionId(ServletRequest request, ServletResponse response) {
         HttpServletRequest httpServletRequest = WebUtils.toHttp(request);

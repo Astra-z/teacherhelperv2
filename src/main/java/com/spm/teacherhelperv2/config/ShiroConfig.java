@@ -1,18 +1,25 @@
 package com.spm.teacherhelperv2.config;
 
+import lombok.Data;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.crazycake.shiro.RedisManager;
+import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
+import java.time.Duration;
 import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -26,11 +33,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * version: 1.0
  */
 @Configuration
+@ConfigurationProperties(
+        prefix = "spring.redis",ignoreUnknownFields=true
+)
+@Data
 public class ShiroConfig {
     /**
      * shiro 配置类
      * @return
      */
+
+    private String host = "49.234.40.72:6379";
+
+//    private String password;
+//    private Duration timeout =ne;
     @Bean
     public ShiroFilterFactoryBean  getShiroFilterFactoryBean(@Qualifier("getSecurityManager")DefaultWebSecurityManager getSecurityManager){
         ShiroFilterFactoryBean shiroFilterFactoryBean=new ShiroFilterFactoryBean();
@@ -60,8 +76,66 @@ public class ShiroConfig {
         sessionManager.setSessionValidationSchedulerEnabled(true);
         //去掉shiro登录时url里的JSessionID
         sessionManager.setSessionIdUrlRewritingEnabled(false);
+
+        sessionManager.setSessionDAO(redisSessionDAO());
+
         return sessionManager;
     }
+
+    private RedisManager redisManager() {
+        RedisManager redisManager = new RedisManager();
+        redisManager.setHost(host);
+//        redisManager.setTimeout((int) timeout.toMillis());
+//        redisManager.setPassword(password);
+        return redisManager;
+    }
+
+    /**
+     * RedisSessionDAO shiro sessionDao层的实现 通过redis, 使用的是shiro-redis开源插件
+     * create by: leigq
+     * create time: 2019/7/3 14:30
+     *
+     * @return RedisSessionDAO
+     */
+    @Bean
+    public RedisSessionDAO redisSessionDAO() {
+        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
+        redisSessionDAO.setRedisManager(redisManager());
+        redisSessionDAO.setSessionIdGenerator(sessionIdGenerator());
+        redisSessionDAO.setExpire(1800);
+        return redisSessionDAO;
+    }
+
+    /**
+     * cacheManager 缓存 redis实现, 使用的是shiro-redis开源插件
+     * <br/>
+     * <br/>
+     * @return RedisCacheManager
+     */
+
+    @Bean
+    public RedisCacheManager cacheManager() {
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        redisCacheManager.setRedisManager(redisManager());
+        // 必须要设置主键名称，shiro-redis 插件用过这个缓存用户信息
+        redisCacheManager.setPrincipalIdFieldName("userId");
+        return redisCacheManager;
+    }
+
+    /**
+     * Session ID 生成器
+     * <br/>
+     * create by: leigq
+     * <br/>
+     * create time: 2019/7/3 16:08
+     *
+     * @return JavaUuidSessionIdGenerator
+     */
+    @Bean
+    public JavaUuidSessionIdGenerator sessionIdGenerator() {
+        return new JavaUuidSessionIdGenerator();
+    }
+
 
     @Bean
     public DefaultWebSecurityManager getSecurityManager(@Qualifier("getRealm")UserRealm realm,
@@ -70,6 +144,7 @@ public class ShiroConfig {
         securityManager.setRealm(realm);
 
         securityManager.setSessionManager(sessionManager);
+        securityManager.setCacheManager(cacheManager());
         return securityManager;
 
     }
