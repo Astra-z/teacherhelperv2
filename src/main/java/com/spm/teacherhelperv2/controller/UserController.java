@@ -68,7 +68,7 @@ public class UserController {
      * @return userDO实体类数据
      */
 	@GetMapping("/{userId}")
-	@RequiresPermissions({"user:list" })
+//	@RequiresPermissions({"user:list" })
     @ApiOperation(value = "根据ID查找数据",httpMethod = "GET",notes = "用于通过userId，查询s_user表中对应的一条数据")
 	@ApiImplicitParam(name = "userId", value = "userId", paramType = "path", dataType = "String")
 	@ApiResponses({ @ApiResponse(code = 551, message = "第三方平台错误"), @ApiResponse(code = 552, message = "本平台错误"),
@@ -239,6 +239,16 @@ public class UserController {
         }catch (Exception e){
         	return RespondResult.error("删除失败");
         }
+	}
 
-	}	
+	@GetMapping("/userbyRole")
+//	@RequiresPermissions({ "user:list" })
+	public RespondResult getUsersByRoleName(@RequestParam(value = "roleName", required = false) String roleName) {
+		try {
+			return RespondResult.success("查找成功",userService.findUsersByRole(roleName));
+		}catch (Exception e){
+			return RespondResult.error("查找失败");
+		}
+
+	}
 }

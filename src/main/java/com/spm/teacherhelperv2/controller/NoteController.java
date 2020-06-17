@@ -226,6 +226,6 @@ public class NoteController {
         }catch (Exception e){
         	return RespondResult.error("删除失败");
         }
+	}
 
-	}	
 }

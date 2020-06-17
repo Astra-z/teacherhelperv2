@@ -64,5 +64,8 @@ public interface UserService {
 	 * @param userId userId
      * @return String
 	 */
-	public Boolean deleteUserById(String userId);	
+	public Boolean deleteUserById(String userId);
+
+
+	public List<UserDO> findUsersByRole(String roleName);
 }

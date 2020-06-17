@@ -186,4 +186,9 @@ public class UserServiceImpl implements UserService {
         logger.info("receive:[userId:"+userId+"];Intermediate variable:[--singleDelete:"+singleDelete+"];--return:"+flag);
 		return flag;	
 	}
+
+    @Override
+    public List<UserDO> findUsersByRole(String roleName) {
+        return this.userMapper.findUsersByRole(roleName);
+    }
 }

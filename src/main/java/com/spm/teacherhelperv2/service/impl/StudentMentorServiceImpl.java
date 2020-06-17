@@ -25,9 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * StudentMentorServiceImpl服务实现类
@@ -158,7 +156,9 @@ public class StudentMentorServiceImpl implements StudentMentorService {
 	@Async
 	public Boolean deleteStudentMentorById(String studentMentorId) {
 		Boolean flag = false;
-        int singleDelete = this.studentMentorMapper.deleteById(Integer.valueOf(studentMentorId));
+		Map<String,Object> columnMap=new HashMap<>();
+		columnMap.put("STUDENT_ID",Integer.valueOf(studentMentorId));
+        int singleDelete = this.studentMentorMapper.deleteByMap(columnMap);
         if(singleDelete == 1){
            flag = true; 
         }     	    

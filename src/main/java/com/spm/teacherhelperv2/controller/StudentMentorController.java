@@ -49,7 +49,7 @@ public class StudentMentorController {
 	 * @return studentMentorDO实体类数据列表
 	 */
 	@GetMapping("/")
-	@RequiresPermissions({ "studentmentor:list" })
+//	@RequiresPermissions({ "studentmentor:list" })
 	@ApiOperation(value = "获取满足某些条件的全部数据列", httpMethod = "GET", notes = "用于通过指定条件,查询s_student_mentor表对应所用数据")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "page", value = "请求页码", paramType = "query", dataType = "String"),
 			@ApiImplicitParam(name = "limit", value = "每页数据条数", paramType = "query", dataType = "String"), 
