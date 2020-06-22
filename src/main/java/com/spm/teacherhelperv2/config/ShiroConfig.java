@@ -43,7 +43,7 @@ public class ShiroConfig {
      * @return
      */
 
-    private String host = "49.234.40.72:6379";
+    private String host = "180.76.55.194:6379";
 
 //    private String password;
 //    private Duration timeout =ne;
@@ -86,7 +86,7 @@ public class ShiroConfig {
         RedisManager redisManager = new RedisManager();
         redisManager.setHost(host);
 //        redisManager.setTimeout((int) timeout.toMillis());
-//        redisManager.setPassword(password);
+        redisManager.setPassword("123");
         return redisManager;
     }
 

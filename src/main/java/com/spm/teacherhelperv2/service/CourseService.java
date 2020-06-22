@@ -91,4 +91,7 @@ public interface CourseService {
 	 * @return
 	 */
 	public List<CourseDO> getMyCourseList(String studentId);
+
+
+	public Boolean dropCourse(String studentId,String courseId);
 }

@@ -5,6 +5,7 @@ import com.spm.teacherhelperv2.entity.CourseDO;
 import com.spm.teacherhelperv2.manager.RespondResult;
 import com.spm.teacherhelperv2.service.CourseService;
 import io.swagger.annotations.*;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -266,6 +267,18 @@ public class CourseController {
 	public RespondResult getMyCourselist(@PathVariable(value = "studentId")String studentId){
 		try {
 			return RespondResult.success("查询成功",this.courseService.getMyCourseList(studentId));
+		}
+		catch(Exception e) {
+			return RespondResult.error("查询失败");
+		}
+	}
+
+	@DeleteMapping("/dropCourse")
+	@ResponseBody
+	public RespondResult dropCourse(@RequestParam("studentId")String studentId,
+									@RequestParam("courseId")String courseId){
+		try {
+			return RespondResult.success("查询成功",this.courseService.dropCourse(studentId,courseId));
 		}
 		catch(Exception e) {
 			return RespondResult.error("查询失败");

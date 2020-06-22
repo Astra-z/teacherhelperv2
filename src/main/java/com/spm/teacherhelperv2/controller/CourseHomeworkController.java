@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.spm.teacherhelperv2.entity.CourseHomeworkDO;
 import com.spm.teacherhelperv2.manager.RespondResult;
 import com.spm.teacherhelperv2.service.CourseHomeworkService;
+import com.spm.teacherhelperv2.util.MyFileUtils;
 import io.swagger.annotations.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -239,7 +240,7 @@ public class CourseHomeworkController {
 												@RequestParam("courseHomeworkId")String courseHomeworkId,
 												@RequestParam("courseId")String courseId) throws IOException {
 		String[] names=filename.split("-");
-		String doenLoadPath  = "F:\\IJ\\teacherhelperv2\\courses\\"+courseId+"\\"+courseHomeworkId+"\\"+names[0]+"\\"+names[1];
+		String doenLoadPath  = MyFileUtils.COURSE_HOME_WORK_PATH +courseId+"\\"+courseHomeworkId+"\\"+names[0]+"\\"+names[1];
 		File file = new File(doenLoadPath);
 		if(file.exists()){
 			HttpHeaders headers = new HttpHeaders();

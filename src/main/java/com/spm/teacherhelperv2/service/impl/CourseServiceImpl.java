@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.spm.teacherhelperv2.dao.CourseFrequencyMapper;
 import com.spm.teacherhelperv2.dao.CourseMapper;
+import com.spm.teacherhelperv2.dao.ScoreMapper;
 import com.spm.teacherhelperv2.dao.SpecMapper;
 import com.spm.teacherhelperv2.entity.CourseDO;
 import com.spm.teacherhelperv2.entity.CourseFrequencyDO;
@@ -33,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -51,6 +53,8 @@ public class CourseServiceImpl implements CourseService {
 	@Autowired(required = false)
 	private SpecMapper specMapper;
 
+	@Autowired(required = false)
+	private ScoreMapper scoreMapper;
 
 	@Autowired
 	@Qualifier("CourseFrequencyService")
@@ -183,11 +187,20 @@ public class CourseServiceImpl implements CourseService {
 		courseDO.setModifyTime(new Date());
 		this.courseMapper.updateById(courseDO);
 		JSONObject courseData = JSONObject.parseObject(data);
+		List<CourseFrequencyDO> oldCourseTimeList=this.courseFrequencyMapper
+				.selectList(new QueryWrapper<CourseFrequencyDO>().eq("COURSEID",courseDO.getCourseId()));
+		Set<Integer> oldIdList=oldCourseTimeList.stream().map(CourseFrequencyDO::getCourseFrequencyId).collect(Collectors.toSet());
 		if(courseData.containsKey("courseTimeList")){
 			JSONArray courseTimeList= (JSONArray) courseData.get("courseTimeList");
-			courseTimeList.forEach( courseTime->{
-				this.courseFrequencyService.updateCourseTime(JSONObject.toJSONString(courseTime));
+			courseTimeList.forEach(courseTime->{
+				CourseFrequencyDO courseFrequencyDO=this.courseFrequencyService.updateCourseTime(JSONObject.toJSONString(courseTime));
+				oldIdList.remove(courseFrequencyDO.getCourseFrequencyId());
 			});
+		}
+		if(!oldIdList.isEmpty()){
+			for (Integer id:oldIdList){
+				this.courseFrequencyMapper.deleteById(id);
+			}
 		}
 
 		logger.info("receive:[data:"+data+"--courseId:"+courseId+"];Intermediate variable:[--courseDO:"+courseDO+"];--return:"+courseDO);
@@ -219,7 +232,7 @@ public class CourseServiceImpl implements CourseService {
 			return false;
 		}
 		String fileName = file.getOriginalFilename();
-		String filePath = "F:\\IJ\\teacherhelperv2\\courses\\"+courseId+"\\"+courseHomeworkId+"\\"+username+"\\";
+		String filePath = MyFileUtils.COURSE_HOME_WORK_PATH+courseId+"\\"+courseHomeworkId+"\\"+username+"\\";
 		File dest = new File(filePath + fileName);
 		File parentDir= dest.getParentFile();
 		try {
@@ -238,7 +251,7 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public List<String> getMyCourseHomeworkList(String courseId,String courseHomeworkId,String username){
 		if(username!=null){
-			String filePath = "F:\\IJ\\teacherhelperv2\\courses\\"+courseId+"\\"+courseHomeworkId+"\\"+username+"\\";
+			String filePath = MyFileUtils.COURSE_HOME_WORK_PATH+courseId+"\\"+courseHomeworkId+"\\"+username+"\\";
 			File coursefile=new File(filePath);
 			if(!coursefile.exists()){
 				coursefile.mkdirs();
@@ -247,7 +260,7 @@ public class CourseServiceImpl implements CourseService {
 			return courseHomeworkList;
 		}
 		else {
-			String filePath = "F:\\IJ\\teacherhelperv2\\courses\\"+courseId+"\\"+courseHomeworkId+"\\";
+			String filePath = MyFileUtils.COURSE_HOME_WORK_PATH+courseId+"\\"+courseHomeworkId+"\\";
 			File coursefile=new File(filePath);
 			if(!coursefile.exists()){
 				coursefile.mkdirs();
@@ -270,6 +283,26 @@ public class CourseServiceImpl implements CourseService {
 							.eq("courseId",courseDO.getCourseId())));
 		});
 		return courseDOs;
+	}
+
+    @Override
+    public Boolean dropCourse(String studentId, String courseId) {
+		Boolean flag=Boolean.FALSE;
+		Integer cId=Integer.valueOf(courseId);
+		QueryWrapper<ScoreDO> deleteWrapper=new QueryWrapper<>();
+		deleteWrapper.eq("COURSE_ID",cId).eq("STUDENT_ID",studentId);
+		int scoreFlag=this.scoreMapper.delete(deleteWrapper);
+		if(scoreFlag==1){
+			CourseDO courseDO=this.courseMapper.selectById(cId);
+			courseDO.setStudentNum(courseDO.getStudentNum()-1);
+			int courseFlag=this.courseMapper.updateById(courseDO);
+			if(courseFlag==1){
+				flag=true;
+			}
+		}
+		logger.info("receive:[courseId:"+courseId+"]--return:"+flag);
+		return flag;
+
 	}
 
 }

@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class MyFileUtils {
     private MyFileUtils(){};
-    public final static String COURSE_HOME_WORK_PATH ="F:\\IJ\\teacherhelperv2\\courses\\";
-    public final static String STUDENT_FILE_PATH="F:\\IJ\\teacherhelperv2\\studentfiles\\";
+    public final static String COURSE_HOME_WORK_PATH ="D:\\workspace\\teacherhelperv2_files\\courses\\";
+    public final static String STUDENT_FILE_PATH="D:\\workspace\\teacherhelperv2_files\\studentfiles\\";
 
     public static List<String> findAllMyFileNames(File dir){
         List<String> dirNameList=new ArrayList<>();

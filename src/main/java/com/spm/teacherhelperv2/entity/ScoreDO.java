@@ -40,7 +40,7 @@ public class ScoreDO implements Serializable {
      */
     @ApiModelProperty(value = "")
     @TableField("STUDENT_ID")
-    private Integer studentId;
+    private String studentId;
     /**
      *  
      */

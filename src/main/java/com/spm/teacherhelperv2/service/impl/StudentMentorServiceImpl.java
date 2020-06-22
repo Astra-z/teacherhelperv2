@@ -212,7 +212,7 @@ public class StudentMentorServiceImpl implements StudentMentorService {
 			return false;
 		}
 		String fileName = file.getOriginalFilename();
-		String filePath = "F:\\IJ\\teacherhelperv2\\studentfiles\\"+mentorId+"\\"+studentId+"\\";
+		String filePath = MyFileUtils.COURSE_HOME_WORK_PATH+mentorId+"\\"+studentId+"\\";
 		File dest = new File(filePath + fileName);
 		File parentDir= dest.getParentFile();
 		try {

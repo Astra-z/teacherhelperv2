@@ -144,7 +144,8 @@ public class CourseHomeworkServiceImpl implements CourseHomeworkService {
 	@Async
 	public Boolean deleteCourseHomeworkById(String courseHomeworkId) {
 		Boolean flag = false;
-        int singleDelete = this.courseHomeworkMapper.deleteById(courseHomeworkId);	
+		Integer id=Integer.valueOf(courseHomeworkId);
+        int singleDelete = this.courseHomeworkMapper.deleteById(id);
         if(singleDelete == 1){
            flag = true; 
         }     	    

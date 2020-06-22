@@ -156,7 +156,12 @@ public class CourseFrequencyServiceImpl implements CourseFrequencyService {
     @Override
     public CourseFrequencyDO updateCourseTime(String data) {
         CourseFrequencyDO courseTime= JSONObject.parseObject(data,CourseFrequencyDO.class);
-        this.updateCourseFrequency(courseTime);
+        if(courseTime.getCourseFrequencyId()==null){
+        	this.insertCourseFrequency(courseTime);
+		}
+        else{
+			this.updateCourseFrequency(courseTime);
+		}
         return courseTime;
     }
 }
